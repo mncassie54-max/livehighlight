@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>livehl — 라이브 하이라이트 편집 보조</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <h1>livehl</h1>
+  <span class="sub">OBS 라이브 → 하이라이트 → 프리미어</span>
+  <div id="doctor" class="doctor"></div>
+</header>
+
+<div class="layout">
+  <aside>
+    <button id="btn-new" class="primary block">+ 새 방송 분석</button>
+    <h3>프로젝트</h3>
+    <ul id="project-list" class="plist"></ul>
+  </aside>
+
+  <main>
+    <!-- ================= 새 프로젝트 ================= -->
+    <section id="view-new" class="hidden">
+      <h2>1. 방송 파일 선택</h2>
+      <div class="card">
+        <div class="fs-bar">
+          <div id="fs-shortcuts" class="chips"></div>
+          <div class="row">
+            <button id="fs-up" class="ghost">⬆ 상위 폴더</button>
+            <input id="fs-path" type="text" spellcheck="false" placeholder="경로 직접 입력">
+            <button id="fs-go" class="ghost">이동</button>
+          </div>
+        </div>
+        <div class="fs-panes">
+          <ul id="fs-dirs" class="fslist"></ul>
+          <ul id="fs-files" class="fslist"></ul>
+        </div>
+        <div class="row picked">
+          <label>선택된 파일</label>
+          <input id="new-video" type="text" spellcheck="false" placeholder="위에서 영상 파일을 클릭하세요">
+        </div>
+        <div class="row">
+          <label>유튜브 다시보기 URL <small>(채팅 반응 분석용 · 선택)</small></label>
+          <input id="new-url" type="text" spellcheck="false" placeholder="https://www.youtube.com/watch?v=...">
+        </div>
+        <div class="row">
+          <label>프로젝트 이름</label>
+          <input id="new-name" type="text" placeholder="비우면 파일명 사용">
+        </div>
+        <button id="btn-create" class="primary">프로젝트 만들기</button>
+      </div>
+    </section>
+
+    <!-- ================= 프로젝트 ================= -->
+    <section id="view-proj" class="hidden">
+      <div class="phead">
+        <h2 id="p-name"></h2>
+        <div id="p-meta" class="meta"></div>
+        <button id="btn-delete" class="ghost danger small">프로젝트 삭제</button>
+      </div>
+
+      <!-- 2. 분석 -->
+      <div class="card">
+        <h3>2. 신호 분석</h3>
+        <div class="grid2">
+          <div class="row">
+            <label>마이크 트랙 <small>(내 목소리 · 웃음 분석용)</small></label>
+            <select id="sel-mic"></select>
+          </div>
+          <div class="row">
+            <label>익스포트 오디오 트랙 <small>(클립/숏츠 소리)</small></label>
+            <select id="sel-mix"></select>
+          </div>
+        </div>
+        <div class="row">
+          <label>유튜브 다시보기 URL</label>
+          <input id="p-url" type="text" spellcheck="false" placeholder="채팅 분석을 쓰려면 입력">
+        </div>
+        <label class="check"><input type="checkbox" id="chk-chat" checked> 채팅 리플레이 받아서 분석</label>
+        <label class="check"><input type="checkbox" id="chk-audio" checked> 마이크 오디오 분석</label>
+        <label class="check"><input type="checkbox" id="chk-align" checked> 시간축 자동 미세보정</label>
+        <div class="row">
+          <button id="btn-analyze" class="primary">분석 시작</button>
+          <span class="hint">5시간 방송이면 오디오 분석에 보통 5~15분 걸립니다.</span>
+        </div>
+        <div id="job-box" class="jobs"></div>
+        <div id="stats-box" class="stats"></div>
+      </div>
+
+      <!-- 3. 정렬 -->
+      <div class="card" id="card-align">
+        <h3>3. 시간축 정렬 <small>채팅 시간 → 녹화 시간</small></h3>
+        <p id="align-info" class="dim"></p>
+        <div class="row inline">
+          <label>오프셋(초)</label>
+          <input id="off-num" type="number" step="0.5" style="width:110px">
+          <input id="off-range" type="range" min="-3600" max="3600" step="1">
+          <button id="btn-refine" class="ghost">자동 보정</button>
+        </div>
+        <p class="dim small">오프셋이 틀리면 후보 위치가 전부 어긋납니다. 후보 하나를 미리보기로 확인해서 반응 타이밍이 맞는지 보세요.</p>
+      </div>
+
+      <!-- 4. 검출 -->
+      <div class="card">
+        <h3>4. 하이라이트 검출 설정</h3>
+        <div id="weights" class="wgrid"></div>
+        <div id="params" class="wgrid"></div>
+        <button id="btn-detect" class="primary">다시 검출</button>
+      </div>
+
+      <!-- 5. 타임라인 -->
+      <div class="card">
+        <h3>5. 타임라인</h3>
+        <div id="legend" class="legend"></div>
+        <canvas id="timeline" height="200"></canvas>
+        <div id="tl-tip" class="tip hidden"></div>
+      </div>
+
+      <!-- 6. 후보 -->
+      <div class="card">
+        <h3>6. 하이라이트 후보 <span id="seg-count" class="dim"></span></h3>
+        <div class="row inline">
+          <button id="btn-all" class="ghost small">전체 선택</button>
+          <button id="btn-none" class="ghost small">전체 해제</button>
+          <button id="btn-top10" class="ghost small">상위 10개만</button>
+          <span class="hint">체크된 후보만 익스포트됩니다.</span>
+        </div>
+        <div id="segments" class="segs"></div>
+      </div>
+
+      <!-- 7. 익스포트 -->
+      <div class="card">
+        <h3>7. 내보내기</h3>
+        <div class="row inline">
+          <button id="btn-xml-markers" class="primary">프리미어 XML · 마커</button>
+          <button id="btn-xml-rough" class="primary">프리미어 XML · 러프컷</button>
+          <button id="btn-previews" class="ghost">미리보기 클립 일괄</button>
+          <button id="btn-shorts" class="ghost">숏츠 일괄 (9:16)</button>
+        </div>
+        <div class="grid3">
+          <div class="row"><label>숏츠 레이아웃</label>
+            <select id="ex-layout"><option value="blur">블러 배경 (원본 유지)</option><option value="crop">꽉 채우기 (좌우 잘림)</option></select>
+          </div>
+          <div class="row"><label>크롭 중심 <small>(꽉 채우기용)</small></label>
+            <input id="ex-focus" type="range" min="0" max="1" step="0.05">
+          </div>
+          <div class="row"><label>숏츠 최대 길이(초)</label>
+            <input id="ex-shortslen" type="number" min="10" max="180" step="1">
+          </div>
+        </div>
+        <div id="export-out" class="exout"></div>
+      </div>
+    </section>
+  </main>
+</div>
+<script src="/static/app.js"></script>
+</body>
+</html>

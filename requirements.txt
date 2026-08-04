@@ -1,0 +1,4 @@
+numpy>=1.24
+yt-dlp>=2025.1.1
+# ffmpeg 를 brew 로 설치하지 않은 환경을 위한 번들 바이너리 (있으면 자동 사용)
+imageio-ffmpeg>=0.5
