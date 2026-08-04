@@ -102,18 +102,6 @@ LAUGH_WORD_RE = re.compile(
 NOT_LAUGH_RE = re.compile(r"(노\s*잼|안\s*웃|못\s*웃|재미없|웃기지\s*도|웃기지도)", re.I)
 
 
-def laugh_score(txt: str) -> float:
-    """이 채팅이 얼마나 웃은 것인지. 0 이면 웃음이 아니다."""
-    if not txt or NOT_LAUGH_RE.search(txt):
-        return 0.0
-    if LAUGH_RE.search(txt):
-        # ㅋ 개수가 많으면 더 크게 웃은 것으로 본다 (최대 3배)
-        k = min(len(re.findall(r"[ㅋㅎ]", txt)), 12) / 4.0
-        return 1.0 + k
-    if LAUGH_WORD_RE.search(txt):
-        # 의성어만큼 강하지는 않게 본다.
-        return 1.0
-    return 0.0
 HYPE_RE = re.compile(
     r"(ㄷㄷ+|ㅁㅊ|미친|대박|레전드|렛츠고|ㄴㅇㄱ|헐+|우와+|와+아*|ㅗㅜㅑ|소름|개[웃쩐잘미]|"
     r"실화냐|어질|와우|ㅇㅁㅇ|😱|🔥|👏|💀|😭|😮)",
@@ -133,6 +121,77 @@ CLIP_RE = re.compile(
     r"(?:이거|저거|요거|여기|지금)\s*(?:따|각))",
     re.I,
 )
+
+
+# --------------------------------------------------------------- 치지직 이모티콘
+#
+# 치지직 채팅은 이모티콘이 `{:d_65:}` 같은 코드로 들어와서 글자만 봐서는 뜻을 알 수 없다.
+# 채팅의 extras.emojis 가 코드 → 이미지 URL 을 알려주므로, 기본 이모티콘 이미지를
+# 실제로 받아 눈으로 확인해서 아래 표를 만들었다. (코드 → 파일 규칙: d_N → b_(N-40), c_(N-72))
+EMOJI_RE = re.compile(r"\{:([a-zA-Z0-9_]+):\}")
+
+# 대놓고 웃는 것. ㅋㅋ 를 친 것과 같게 본다.
+CHZZK_LAUGH_STRONG = {
+    "d_65",    # "ㅋㅋㅋㅋㅋㅋ" 글자 (b_25)
+    "d_142",   # "ㄹㅇㅋㅋ" 글자 (c_70)
+    "d_117",   # 눈물 흘리며 크게 웃는 얼굴 (c_45)
+    "d_110",   # 뒤집어지게 웃는 그림 (c_38)
+    "d_44",    # 누워서 ㅋㅋㅋㅋ (b_04)
+}
+# 웃는 얼굴이지만 폭소까지는 아닌 것. 약하게 센다.
+CHZZK_LAUGH_MILD = {
+    "d_42",    # 선글라스 쓰고 웃는 얼굴 (b_02)
+    "d_46",    # 눈 감고 미소 (b_06)
+    "d_54",    # ^^ 웃는 얼굴 (b_14)
+    "d_108",   # 혀 내밀고 웃는 얼굴 (c_36) — 이 방송에서 가장 많이 쓰였다
+    "d_109",   # 만세 하며 웃는 문어 (c_37)
+}
+# "이 장면 잘라달라" 에 해당하는 것.
+CHZZK_CLIP_EMOJI = {
+    "d_144",   # "컷!" + 가위 (c_72)
+}
+
+
+def _emoji_codes(txt: str) -> List[str]:
+    return EMOJI_RE.findall(txt or "")
+
+
+def laugh_score(txt: str) -> float:
+    """이 채팅이 얼마나 웃은 것인지. 0 이면 웃음이 아니다."""
+    if not txt:
+        return 0.0
+    if NOT_LAUGH_RE.search(txt):
+        return 0.0
+
+    codes = _emoji_codes(txt)
+    strong = sum(1 for c in codes if c in CHZZK_LAUGH_STRONG)
+    mild = sum(1 for c in codes if c in CHZZK_LAUGH_MILD)
+
+    if LAUGH_RE.search(txt):
+        # ㅋ 개수가 많으면 더 크게 웃은 것으로 본다 (최대 3배)
+        k = min(len(re.findall(r"[ㅋㅎ]", txt)), 12) / 4.0
+        return 1.0 + k + min(strong, 3) * 0.5
+    if strong:
+        # 이모티콘을 여러 번 붙이는 건 ㅋ 을 늘려 치는 것과 같다 (최대 3개까지 센다)
+        return 1.0 + min(strong - 1, 2) * 0.5
+    if LAUGH_WORD_RE.search(txt):
+        # 의성어만큼 강하지는 않게 본다.
+        return 1.0
+    if mild:
+        return 0.6
+    return 0.0
+
+
+def clip_score(txt: str) -> float:
+    """시청자가 이 구간을 잘라달라고 했는지. 0 이면 아니다."""
+    if not txt:
+        return 0.0
+    if CLIP_RE.search(txt):
+        return 1.0
+    if any(c in CHZZK_CLIP_EMOJI for c in _emoji_codes(txt)):
+        return 1.0
+    return 0.0
+
 
 
 def _runs_to_text(msg: Dict[str, Any]) -> str:
@@ -238,7 +297,7 @@ def curves(events: List[Dict[str, Any]], length_sec: int) -> Dict[str, np.ndarra
             out["chat_laugh"][i] += lw
         if HYPE_RE.search(txt):
             out["chat_hype"][i] += 1.0
-        if CLIP_RE.search(txt):
+        if clip_score(txt):
             out["chat_clip"][i] += 1.0
         if e["kind"] in ("paid", "member"):
             out["chat_paid"][i] += 1.0
@@ -264,7 +323,7 @@ def stats(events: List[Dict[str, Any]]) -> Dict[str, Any]:
     if not events:
         return {"count": 0}
     laugh = sum(1 for e in events if laugh_score(e["text"] or ""))
-    clip = sum(1 for e in events if CLIP_RE.search(e["text"] or ""))
+    clip = sum(1 for e in events if clip_score(e["text"] or ""))
     paid = sum(1 for e in events if e["kind"] in ("paid", "member"))
     span = events[-1]["t"] - events[0]["t"]
     by_source: Dict[str, int] = {}
@@ -299,7 +358,7 @@ def sample_messages(
         s = 0
         if e["kind"] in ("paid", "member"):
             s += 3
-        if CLIP_RE.search(txt):
+        if clip_score(txt):
             s += 3
         if laugh_score(txt):
             s += 2
