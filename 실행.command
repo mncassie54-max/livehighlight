@@ -58,6 +58,30 @@ if [ "$WANT" != "$HAVE" ]; then
   printf '%s\n' "$WANT" > "$STAMP"
 fi
 
+# ---------------------------------------------- 채팅 수집기(yt-dlp) 최신 유지
+# yt-dlp 는 유튜브가 내부 구조를 바꿀 때마다 깨진다(몇 주 단위로 일어난다).
+# 낡은 채로 두면 "채팅을 받지 못했습니다" 만 보이고 원인을 알 수 없으므로
+# 하루에 한 번 최신으로 맞춘다. 실패하면 지금 버전으로 그냥 진행한다.
+YT_STAMP=".venv/.ytdlp-checked"
+TODAY="$(date +%Y%m%d)"
+if [ "$(cat "$YT_STAMP" 2>/dev/null || true)" != "$TODAY" ]; then
+  say "▶ 채팅 수집기를 최신으로 맞춥니다 (하루에 한 번만 확인합니다)…"
+  # 인터넷이 없으면 pip 은 "이미 설치됨" 으로 판단해 성공(0)을 반환한다.
+  # 그러면 갱신하지도 못한 채 확인했다고 표시되므로, 먼저 연결을 직접 확인한다.
+  # pip 출력은 로그로 돌려 두고 실패했을 때만 보여준다(경고문이 겁을 주지 않게).
+  YT_LOG="$(mktemp)"
+  if curl -fsS --max-time 8 -o /dev/null "https://pypi.org/simple/yt-dlp/" 2>/dev/null \
+     && .venv/bin/python -m pip install -q --upgrade --timeout 10 --retries 1 yt-dlp \
+        > "$YT_LOG" 2>&1; then
+    printf '%s\n' "$TODAY" > "$YT_STAMP"
+    say "  ✓ 준비됨 (yt-dlp $(.venv/bin/python -c 'import yt_dlp; print(yt_dlp.version.__version__)' 2>/dev/null || echo '버전 확인 실패'))"
+  else
+    say "  ⚠️  최신 확인을 건너뜁니다 (인터넷 연결을 확인해 주세요)."
+    say "     지금 갖고 있는 버전으로 계속합니다. 채팅 수집이 안 되면 이 창을 다시 실행해 보세요."
+  fi
+  rm -f "$YT_LOG"
+fi
+
 # ---------------------------------------------------------------------- 실행
 say ""
 say "▶ Live Highlight 실행 — 잠시 뒤 브라우저에 작업 화면이 열립니다."

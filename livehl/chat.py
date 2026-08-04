@@ -58,8 +58,17 @@ def fetch(url: str, out_dir: str, progress: Progress = None) -> Dict[str, Any]:
             if progress and client:
                 progress(0.1, "유튜브 접속 재시도 중(%s)…" % client)
     if info is None:
+        # 원인은 대개 셋 중 하나다. 사용자가 스스로 판단할 수 있게 순서대로 적는다.
+        # 유튜브가 내부 구조를 바꾸면 yt-dlp 가 낡아 실패하므로 그 경우를 먼저 알린다.
         raise RuntimeError(
-            "유튜브에서 채팅을 받지 못했습니다. 주소를 확인해 주세요.\n%s" % last_err
+            "유튜브에서 채팅을 받지 못했습니다. 아래를 차례로 확인해 주세요.\n"
+            "  1) [업데이트.command] 를 다시 실행해 주세요. "
+            "유튜브가 방식을 바꾸면 채팅 수집기가 낡아 실패하는데, 실행할 때 최신으로 맞춰집니다.\n"
+            "  2) 주소가 그 방송의 '다시보기' 주소인지 확인해 주세요.\n"
+            "  3) 그 방송에 채팅 다시보기가 남아 있는지 확인해 주세요"
+            "(비공개이거나 삭제되면 받을 수 없습니다).\n"
+            "\n현재 수집기 버전: %s\n원래 오류: %s"
+            % (getattr(yt_dlp.version, "__version__", "알 수 없음"), last_err)
         )
 
     files = sorted(glob.glob(os.path.join(out_dir, "*live_chat.json")))

@@ -61,6 +61,11 @@ GUI 에서 손으로 바꾸면 그 값이 우선한다(`chzzk_offset_auto=False`
 **`업데이트.command`** 는 `git pull` 로 최신 버전을 받은 뒤 실행한다.
 
 의존성은 `numpy`, `yt-dlp`, `imageio-ffmpeg` 뿐이다. Node나 Homebrew는 필요 없다.
+
+`yt-dlp`는 **실행할 때 하루에 한 번 최신으로 갱신한다**(`.venv/.ytdlp-checked` 로 날짜를 기억).
+유튜브가 내부 구조를 바꾸면 낡은 yt-dlp가 채팅 수집에 실패하는데, 그때 사용자에게는
+"채팅을 받지 못했습니다" 만 보이고 원인을 알 수 없기 때문이다. 인터넷이 안 되면 갱신을
+건너뛰고 지금 버전으로 실행한다(스탬프를 남기지 않아 다음 실행에서 다시 시도한다).
 ffmpeg는 `imageio-ffmpeg`에 번들된 정적 바이너리를 자동으로 쓴다.
 `brew install ffmpeg`로 직접 설치해두면 그쪽을 우선 사용한다(ffprobe도 함께 쓸 수 있어 약간 더 정확하다).
 
