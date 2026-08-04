@@ -94,8 +94,20 @@ def meta(no: str) -> Dict[str, Any]:
         "title": c.get("videoTitle") or c.get("title"),
         "duration": c.get("duration"),
         "publish_date": c.get("publishDate") or c.get("liveOpenDate"),
+        "live_open_utc": _epoch(c.get("liveOpenDate")),
         "error": err,
     }
+
+
+def _epoch(s: Optional[str]) -> Optional[float]:
+    """'2026-08-02 14:07:29' → epoch 초. 이 시각을 유튜브 방송 시작시각과 비교하면
+    두 플랫폼 다시보기의 시작점 차이를 손 안 대고 구할 수 있다."""
+    if not s:
+        return None
+    try:
+        return time.mktime(time.strptime(str(s)[:19], "%Y-%m-%d %H:%M:%S"))
+    except (ValueError, TypeError, OverflowError):
+        return None
 
 
 def _nickname(chat: Dict[str, Any]) -> str:

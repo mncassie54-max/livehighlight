@@ -148,6 +148,8 @@ def _settings(r: Req):
             proj[key] = int(b[key])
     if b.get("chzzk_offset_sec") is not None:
         proj["chzzk_offset_sec"] = float(b["chzzk_offset_sec"])
+        proj["chzzk_offset_auto"] = False        # 손으로 정했으면 자동계산이 덮지 않는다
+        proj["chzzk_offset_source"] = "수동 지정"
     if b.get("offset_sec") is not None:
         proj["offset_sec"] = float(b["offset_sec"])
         proj["offset_source"] = "수동 지정"

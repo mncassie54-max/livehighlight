@@ -116,8 +116,23 @@ def analyze(
             )
             proj["chzzk_meta"] = cz_meta
             cz_events = chzzk.parse(cz_meta.get("chat_file"))
-            # 두 플랫폼의 다시보기 시작점이 다르면 이 값으로 민다 (기본 0)
-            shift = float(proj.get("chzzk_offset_sec") or 0.0)
+
+            # 두 플랫폼의 다시보기 시작점 차이는 각자의 방송 시작시각으로 바로 구한다.
+            # (채팅 곡선 교차상관은 한쪽 채팅이 적으면 엉뚱한 값이 나와 못 쓴다 —
+            #  실측: 유튜브 201개 / 치지직 2,753개인 방송에서 -238초라는 헛값이 나왔다.
+            #  같은 방송의 실제 시작시각 차이는 3초였다.)
+            shift = proj.get("chzzk_offset_sec")
+            if shift is None or proj.get("chzzk_offset_auto", True):
+                yt_start = proj.get("stream_start_utc")
+                cz_start = cz_meta.get("live_open_utc")
+                if yt_start and cz_start:
+                    shift = float(cz_start) - float(yt_start)
+                    proj["chzzk_offset_sec"] = round(shift, 1)
+                    proj["chzzk_offset_source"] = "방송 시작시각 비교 (자동)"
+                    store.log(proj, "치지직 시간차 자동 계산: %+.1f초" % shift)
+                else:
+                    shift = float(proj.get("chzzk_offset_sec") or 0.0)
+            shift = float(shift or 0.0)
             if shift:
                 for e in cz_events:
                     e["t"] += shift

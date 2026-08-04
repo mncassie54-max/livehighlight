@@ -30,7 +30,7 @@ def fetch(url: str, out_dir: str, progress: Progress = None) -> Dict[str, Any]:
         if progress and d.get("status") == "downloading":
             progress(0.3, "채팅 리플레이 수신 중…")
 
-    opts = {
+    base = {
         "skip_download": True,
         "writesubtitles": True,
         "subtitleslangs": ["live_chat"],
@@ -40,8 +40,27 @@ def fetch(url: str, out_dir: str, progress: Progress = None) -> Dict[str, Any]:
         "noprogress": True,
         "progress_hooks": [hook],
     }
-    with yt_dlp.YoutubeDL(opts) as ydl:
-        info = ydl.extract_info(url, download=True)
+
+    # 유튜브가 기본 클라이언트를 거절하는 일이 잦다("The page needs to be reloaded").
+    # 클라이언트를 바꿔가며 되는 것을 쓴다. 기본값(None)부터 시도한다.
+    info = None
+    last_err: Optional[Exception] = None
+    for client in (None, "android", "web_safari", "tv", "mweb"):
+        opts = dict(base)
+        if client:
+            opts["extractor_args"] = {"youtube": {"player_client": [client]}}
+        try:
+            with yt_dlp.YoutubeDL(opts) as ydl:
+                info = ydl.extract_info(url, download=True)
+            break
+        except Exception as e:  # noqa: BLE001  yt-dlp 는 여러 예외를 던진다
+            last_err = e
+            if progress and client:
+                progress(0.1, "유튜브 접속 재시도 중(%s)…" % client)
+    if info is None:
+        raise RuntimeError(
+            "유튜브에서 채팅을 받지 못했습니다. 주소를 확인해 주세요.\n%s" % last_err
+        )
 
     files = sorted(glob.glob(os.path.join(out_dir, "*live_chat.json")))
     meta = {
