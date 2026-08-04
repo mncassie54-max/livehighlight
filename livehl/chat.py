@@ -68,7 +68,33 @@ _RENDERERS = (
     "liveChatSponsorshipsGiftPurchaseAnnouncementRenderer",
 )
 
+# ㅋㅋ 같은 의성어. ㅋ 하나짜리는 추임새에 가까워 2개부터 본다.
 LAUGH_RE = re.compile(r"(ㅋ{2,}|ㅎ{2,}|ㅋㅎ|ㅎㅋ|크크|킼|lo+l|lmao|rofl|😂|🤣|😹|ㅋ_ㅋ)", re.I)
+
+# "웃기네" "웃겨" "존잼" 처럼 말로 웃음을 표현한 것.
+# ㅋㅋ 를 치는 것보다 품이 들어 수가 적게 잡히므로, 놓치면 웃음 구간을 통째로 놓친다.
+LAUGH_WORD_RE = re.compile(
+    r"(웃[기겨긴김겼을]|빵\s*터|빵터|터졌|터진다|뿜었|[존꿀핵개]\s*잼|잼있|재밌|"
+    r"미치겠|배\s*아프|숨넘어|숨\s*막혀)",
+    re.I,
+)
+
+# "안 웃겨" "노잼" 은 웃은 게 아니다. 이게 걸리면 웃음으로 세지 않는다.
+NOT_LAUGH_RE = re.compile(r"(노\s*잼|안\s*웃|못\s*웃|재미없|웃기지\s*도|웃기지도)", re.I)
+
+
+def laugh_score(txt: str) -> float:
+    """이 채팅이 얼마나 웃은 것인지. 0 이면 웃음이 아니다."""
+    if not txt or NOT_LAUGH_RE.search(txt):
+        return 0.0
+    if LAUGH_RE.search(txt):
+        # ㅋ 개수가 많으면 더 크게 웃은 것으로 본다 (최대 3배)
+        k = min(len(re.findall(r"[ㅋㅎ]", txt)), 12) / 4.0
+        return 1.0 + k
+    if LAUGH_WORD_RE.search(txt):
+        # 의성어만큼 강하지는 않게 본다.
+        return 1.0
+    return 0.0
 HYPE_RE = re.compile(
     r"(ㄷㄷ+|ㅁㅊ|미친|대박|레전드|렛츠고|ㄴㅇㄱ|헐+|우와+|와+아*|ㅗㅜㅑ|소름|개[웃쩐잘미]|"
     r"실화냐|어질|와우|ㅇㅁㅇ|😱|🔥|👏|💀|😭|😮)",
@@ -175,10 +201,9 @@ def curves(events: List[Dict[str, Any]], length_sec: int) -> Dict[str, np.ndarra
             continue
         txt = e["text"] or ""
         out["chat_rate"][i] += 1.0
-        if LAUGH_RE.search(txt):
-            # ㅋ 개수가 많으면 더 크게 웃은 것으로 본다 (최대 3배)
-            k = min(len(re.findall(r"[ㅋㅎ]", txt)), 12) / 4.0
-            out["chat_laugh"][i] += 1.0 + k
+        lw = laugh_score(txt)
+        if lw:
+            out["chat_laugh"][i] += lw
         if HYPE_RE.search(txt):
             out["chat_hype"][i] += 1.0
         if CLIP_RE.search(txt):
@@ -191,7 +216,7 @@ def curves(events: List[Dict[str, Any]], length_sec: int) -> Dict[str, np.ndarra
 def stats(events: List[Dict[str, Any]]) -> Dict[str, Any]:
     if not events:
         return {"count": 0}
-    laugh = sum(1 for e in events if LAUGH_RE.search(e["text"] or ""))
+    laugh = sum(1 for e in events if laugh_score(e["text"] or ""))
     clip = sum(1 for e in events if CLIP_RE.search(e["text"] or ""))
     paid = sum(1 for e in events if e["kind"] in ("paid", "member"))
     span = events[-1]["t"] - events[0]["t"]
@@ -224,7 +249,7 @@ def sample_messages(
             s += 3
         if CLIP_RE.search(txt):
             s += 3
-        if LAUGH_RE.search(txt):
+        if laugh_score(txt):
             s += 2
         if HYPE_RE.search(txt):
             s += 1
