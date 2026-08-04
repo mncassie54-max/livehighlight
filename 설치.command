@@ -66,6 +66,44 @@ fail() {
   say "  ✓ $label 준비 완료"
 }
 
+# ── Dock 에 고정할 수 있는 앱 런처 만들기 ─────────────────────────────
+# .command 파일은 Dock 앱 자리에 고정할 수 없다. 그래서 macOS 에 기본으로 있는
+# osacompile 로 진짜 .app 을 만든다. 아이콘도 이때 붙일 수 있다.
+# 이 맥에서 직접 만든 파일이라 인터넷 격리 표시가 없고, 따라서
+# "확인되지 않은 개발자" 경고도 나오지 않는다.
+앱만들기() {
+  dir="$1"; appname="$2"; iconname="$3"
+  target="$DEST/$appname.app"
+  launcher="$DEST/$dir/업데이트.command"
+
+  if ! command -v osacompile >/dev/null 2>&1; then
+    return 1
+  fi
+
+  work="$(mktemp -d)" || return 1
+  # Terminal 을 직접 조종(AppleEvent)하면 macOS 가 자동화 권한을 묻는다.
+  # open 으로 열면 그 창이 뜨지 않는다.
+  cat > "$work/launch.applescript" <<EOF
+on run
+	do shell script "open " & quoted form of "$launcher"
+end run
+EOF
+
+  rm -rf "$target"
+  if ! osacompile -o "$target" "$work/launch.applescript" 2>/dev/null; then
+    rm -rf "$work"; return 1
+  fi
+
+  icon="$DEST/$dir/icons/$iconname"
+  if [ -f "$icon" ]; then
+    cp "$icon" "$target/Contents/Resources/applet.icns" 2>/dev/null
+    touch "$target" 2>/dev/null      # Finder 가 아이콘을 다시 읽게 한다
+  fi
+
+  rm -rf "$work"
+  return 0
+}
+
 hr
 say "  영상 편집 도구 설치"
 hr
@@ -81,17 +119,31 @@ mkdir -p "$DEST" || fail "폴더를 만들지 못했습니다: $DEST"
 가져오기 "livehighlight" "LiveHighlight" "🔍 Live Highlight"
 
 say ""
+say "▶ 실행 아이콘을 만듭니다…"
+앱만들기 "AutoCut"       "AutoCut"        "AutoCut.icns"       && APP_AC=1
+앱만들기 "LiveHighlight" "Live Highlight" "LiveHighlight.icns" && APP_LH=1
+if [ "${APP_AC:-}" = "1" ] || [ "${APP_LH:-}" = "1" ]; then
+  say "  ✓ 아이콘 준비 완료"
+else
+  say "  ⚠️  아이콘을 만들지 못했습니다. 폴더 안 [업데이트.command] 로도 실행됩니다."
+fi
+
+say ""
 hr
 say "  ✅ 설치가 끝났습니다"
 hr
 say ""
-say "폴더를 열어 드립니다. 안에 프로그램 폴더 두 개가 있습니다."
+say "폴더를 열어 드립니다. 아이콘 두 개가 보입니다."
 say ""
-say "  ✂️  AutoCut        — 영상의 조용한 부분 잘라내기"
-say "  🔍 LiveHighlight  — 방송에서 재밌는 구간 찾기"
+say "  ✂️  AutoCut          — 영상의 조용한 부분 잘라내기"
+say "  🔍 Live Highlight   — 방송에서 재밌는 구간 찾기"
 say ""
-say "쓰고 싶은 폴더에 들어가서 [ 업데이트.command ] 를 더블클릭하면 실행됩니다."
-say "그 파일이 실행 버튼입니다. 다음부터도 항상 그 파일만 누르시면 됩니다."
+say "이 아이콘을 더블클릭하면 실행됩니다."
+say ""
+say "💡 아이콘을 화면 아래 Dock 으로 끌어다 놓으세요."
+say "   그러면 다음부터는 폴더를 열지 않고 Dock 에서 바로 켤 수 있습니다."
+say ""
+say "   (아이콘 대신 프로그램 폴더 안의 [업데이트.command] 를 눌러도 똑같습니다)"
 say ""
 say "이 창은 이제 닫으셔도 됩니다."
 say ""
