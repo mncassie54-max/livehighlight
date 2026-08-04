@@ -3,309 +3,648 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>시작하기 — Live Highlight & AutoCut</title>
+<title>시작하기 — Live Highlight &amp; AutoCut</title>
 <style>
   :root {
-    --bg: #ffffff;
-    --fg: #1a1a1a;
-    --muted: #666;
-    --line: #e3e3e3;
-    --card: #f7f7f8;
-    --accent: #2f6f4f;
-    --accent-soft: #eaf4ee;
-    --warn: #8a5a00;
-    --warn-soft: #fdf4e3;
-    --maxw: 760px;
+    --paper: #f5f7f8;
+    --paper-2: #ffffff;
+    --sunk: #e7ecee;
+    --ink: #131820;
+    --ink-2: #4d5866;
+    --ink-3: #7a8694;
+    --rule: #d5dcdf;
+    --keep: #2a7f7a;
+    --cut: #a8453a;
+    --marker: #c98a1e;
+    --keep-soft: #d6e8e6;
+    --marker-soft: #f7ecd4;
+
+    --font-sans: "Pretendard", "Malgun Gothic", "Apple SD Gothic Neo",
+                 "Noto Sans KR", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "Cascadia Mono", Consolas, ui-monospace, "D2Coding", monospace;
+
+    --step: clamp(1rem, 0.6rem + 1.2vw, 1.5rem);
+    --measure: 40rem;
+    --nav-w: 15rem;
   }
+
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #16181c; --fg: #e8e8e8; --muted: #9aa0a6; --line: #2e3238;
-      --card: #1e2126; --accent: #7fc7a0; --accent-soft: #1b2b22;
-      --warn: #e0b063; --warn-soft: #2a2318;
+      --paper: #0e1319; --paper-2: #161d25; --sunk: #1b232c;
+      --ink: #e6ecf1; --ink-2: #a3b0bd; --ink-3: #75828f; --rule: #27313b;
+      --keep: #4fb3a8; --cut: #d0705f; --marker: #e8b33f;
+      --keep-soft: #1e3a3a; --marker-soft: #332a17;
     }
   }
+  :root[data-theme="dark"] {
+    --paper: #0e1319; --paper-2: #161d25; --sunk: #1b232c;
+    --ink: #e6ecf1; --ink-2: #a3b0bd; --ink-3: #75828f; --rule: #27313b;
+    --keep: #4fb3a8; --cut: #d0705f; --marker: #e8b33f;
+    --keep-soft: #1e3a3a; --marker-soft: #332a17;
+  }
+  :root[data-theme="light"] {
+    --paper: #f5f7f8; --paper-2: #ffffff; --sunk: #e7ecee;
+    --ink: #131820; --ink-2: #4d5866; --ink-3: #7a8694; --rule: #d5dcdf;
+    --keep: #2a7f7a; --cut: #a8453a; --marker: #c98a1e;
+    --keep-soft: #d6e8e6; --marker-soft: #f7ecd4;
+  }
+
   * { box-sizing: border-box; }
+
   body {
-    margin: 0; background: var(--bg); color: var(--fg);
-    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-    line-height: 1.75; font-size: 16px;
-    -webkit-text-size-adjust: 100%;
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: var(--font-sans); font-size: 1rem; line-height: 1.75;
+    -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%;
   }
-  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 48px 20px 96px; }
-  h1 { font-size: 1.9rem; line-height: 1.3; margin: 0 0 8px; letter-spacing: -0.02em; }
-  .sub { color: var(--muted); margin: 0 0 40px; font-size: 1.05rem; }
-  h2 {
-    font-size: 1.35rem; margin: 56px 0 16px; padding-top: 24px;
-    border-top: 1px solid var(--line); letter-spacing: -0.01em;
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  /* ---------- 머리말 ---------- */
+
+  .masthead {
+    max-width: 76rem; margin: 0 auto;
+    padding: clamp(2.5rem, 6vw, 4.5rem) var(--step) clamp(1.75rem, 4vw, 2.75rem);
   }
-  h3 { font-size: 1.08rem; margin: 32px 0 10px; }
-  p { margin: 0 0 14px; }
-  ul, ol { margin: 0 0 14px; padding-left: 22px; }
-  li { margin: 6px 0; }
-  strong { font-weight: 650; }
+  .eyebrow {
+    margin: 0 0 0.9rem; font-family: var(--font-mono);
+    font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .masthead h1 {
+    margin: 0 0 1rem; font-size: clamp(1.75rem, 1.1rem + 2.6vw, 2.75rem);
+    line-height: 1.25; letter-spacing: -0.02em; font-weight: 800;
+  }
+  .lede {
+    margin: 0; max-width: var(--measure);
+    font-size: clamp(1rem, 0.95rem + 0.3vw, 1.12rem); color: var(--ink-2);
+  }
+  .lede strong { color: var(--ink); font-weight: 700; }
+
+  /* ---------- 레이아웃 ---------- */
+
+  .layout {
+    max-width: 76rem; margin: 0 auto;
+    padding: 0 var(--step) 5rem;
+    display: grid; grid-template-columns: var(--nav-w) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 3.5rem); align-items: start;
+  }
+
+  /* ---------- 목차 메뉴 ---------- */
+
+  .toc { position: sticky; top: 0; max-height: 100vh; overflow-y: auto; padding: 1.75rem 0; }
+  .toc summary {
+    display: none; cursor: pointer; font-family: var(--font-mono);
+    font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-2); padding: 0.85rem 0; list-style: none;
+  }
+  .toc summary::-webkit-details-marker { display: none; }
+  .toc summary::before { content: "☰  "; }
+  .toc-inner { display: flex; flex-direction: column; gap: 1.35rem; }
+  .toc-group { display: flex; flex-direction: column; gap: 0.3rem; }
+  .toc-group > p {
+    margin: 0; font-family: var(--font-mono); font-size: 0.68rem;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3);
+  }
+  .toc a {
+    display: block; color: var(--ink-2); text-decoration: none;
+    font-size: 0.93rem; line-height: 1.5;
+    padding: 0.24rem 0 0.24rem 0.7rem; border-left: 2px solid var(--rule);
+  }
+  .toc a:hover { color: var(--ink); border-left-color: var(--ink-3); }
+  .toc a.is-active { color: var(--keep); font-weight: 700; border-left-color: var(--keep); }
+
+  /* ---------- 본문 ---------- */
+
+  main { display: flex; flex-direction: column; gap: clamp(2.5rem, 5vw, 3.75rem); padding-top: 1.75rem; }
+  section { display: flex; flex-direction: column; gap: 1.1rem; scroll-margin-top: 1.5rem; }
+
+  .sec-kicker {
+    margin: 0; font-family: var(--font-mono); font-size: 0.68rem;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3);
+  }
+  section h2 {
+    margin: 0; font-size: clamp(1.3rem, 1.1rem + 0.8vw, 1.7rem);
+    line-height: 1.3; letter-spacing: -0.015em; font-weight: 750;
+  }
+  section h3 { margin: 0.6rem 0 0; font-size: 1.05rem; font-weight: 700; }
+  .prose { margin: 0; max-width: var(--measure); color: var(--ink-2); }
+  .prose strong { color: var(--ink); font-weight: 700; }
+  .prose + .prose { margin-top: -0.2rem; }
+
   code {
-    background: var(--card); border: 1px solid var(--line); border-radius: 5px;
-    padding: 1px 6px; font-size: 0.9em;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-family: var(--font-mono); font-size: 0.88em;
+    background: var(--sunk); border-radius: 4px; padding: 0.1em 0.4em;
+    color: var(--ink);
   }
-  a { color: var(--accent); text-underline-offset: 2px; }
-  .lead {
-    background: var(--accent-soft); border-radius: 12px;
-    padding: 20px 22px; margin: 0 0 8px;
-  }
-  .lead p:last-child { margin-bottom: 0; }
+  a { color: var(--keep); text-underline-offset: 2px; }
+
+  /* ---------- 카드 ---------- */
+
   .card {
-    background: var(--card); border: 1px solid var(--line);
-    border-radius: 12px; padding: 20px 22px; margin: 18px 0;
+    background: var(--paper-2); border: 1px solid var(--rule);
+    border-radius: 14px; padding: clamp(1.1rem, 3vw, 1.6rem);
+    display: flex; flex-direction: column; gap: 0.7rem;
   }
-  .card h3 { margin-top: 0; }
-  .card p:last-child { margin-bottom: 0; }
-  .note {
-    background: var(--warn-soft); border-left: 3px solid var(--warn);
-    border-radius: 0 8px 8px 0; padding: 16px 18px; margin: 18px 0;
+  .card h3 { margin: 0; font-size: 1.12rem; }
+  .card .prose { max-width: none; }
+  .card-tag {
+    align-self: flex-start; font-family: var(--font-mono);
+    font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
+    background: var(--keep-soft); color: var(--keep);
+    padding: 0.2rem 0.55rem; border-radius: 999px;
   }
-  .note strong { color: var(--warn); }
-  .note p:last-child { margin-bottom: 0; }
-  .steps { counter-reset: s; list-style: none; padding: 0; margin: 0; }
-  .steps > li {
-    counter-increment: s; position: relative;
-    padding: 0 0 4px 46px; margin: 0 0 28px;
+
+  /* ---------- 단계 ---------- */
+
+  .steps { display: flex; flex-direction: column; gap: 1.35rem; }
+  .step { display: grid; grid-template-columns: 2.6rem minmax(0, 1fr); gap: 0.9rem; align-items: start; }
+  .step-num {
+    font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700;
+    color: var(--keep); background: var(--keep-soft);
+    border-radius: 8px; padding: 0.35rem 0; text-align: center;
   }
-  .steps > li::before {
-    content: counter(s); position: absolute; left: 0; top: 1px;
-    width: 30px; height: 30px; border-radius: 50%;
-    background: var(--accent); color: var(--bg);
-    display: grid; place-items: center;
-    font-weight: 700; font-size: 0.95rem;
+  .step-body { display: flex; flex-direction: column; gap: 0.45rem; min-width: 0; }
+  .step-body h3 { margin: 0; font-size: 1.02rem; }
+  .step-body .prose { max-width: none; }
+  .step-note { margin: 0; font-size: 0.9rem; color: var(--ink-3); }
+
+  /* ---------- 강조 박스 ---------- */
+
+  .callout {
+    background: var(--paper-2); border: 1px solid var(--rule);
+    border-left: 3px solid var(--ink-3); border-radius: 0 12px 12px 0;
+    padding: 1.05rem 1.25rem; display: flex; flex-direction: column; gap: 0.5rem;
   }
-  .steps > li > h3 { margin: 2px 0 8px; }
-  .tablewrap { overflow-x: auto; margin: 18px 0; }
-  table { border-collapse: collapse; width: 100%; min-width: 460px; font-size: 0.95rem; }
-  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
-  th { font-weight: 650; background: var(--card); white-space: nowrap; }
-  .flow {
-    display: flex; flex-wrap: wrap; align-items: stretch;
-    gap: 10px; margin: 20px 0;
+  .callout-label {
+    font-family: var(--font-mono); font-size: 0.72rem;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3);
   }
+  .callout .prose { max-width: none; }
+  .callout.is-warn { border-left-color: var(--marker); background: var(--marker-soft); }
+  .callout.is-warn .callout-label { color: var(--marker); }
+  .callout.is-key { border-left-color: var(--keep); background: var(--keep-soft); }
+  .callout.is-key .callout-label { color: var(--keep); }
+
+  .action {
+    background: var(--keep); color: var(--paper-2);
+    border-radius: 14px; padding: 1.35rem 1.5rem; text-align: center;
+    font-size: clamp(1rem, 0.9rem + 0.5vw, 1.2rem); font-weight: 700;
+  }
+  .action code { background: rgba(255,255,255,.2); color: inherit; }
+
+  /* ---------- 표 ---------- */
+
+  .tablewrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 12px; background: var(--paper-2); }
+  table { border-collapse: collapse; width: 100%; min-width: 30rem; font-size: 0.94rem; }
+  th, td { text-align: left; padding: 0.75rem 1rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  tr:last-child th, tr:last-child td { border-bottom: none; }
+  th { font-weight: 700; background: var(--sunk); white-space: nowrap; }
+  td strong { color: var(--ink); }
+  .muted { color: var(--ink-3); font-size: 0.88em; }
+
+  /* ---------- 흐름도 ---------- */
+
+  .flow { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: stretch; }
   .flow .box {
-    flex: 1 1 150px; background: var(--card); border: 1px solid var(--line);
-    border-radius: 10px; padding: 14px; text-align: center; font-size: 0.92rem;
+    flex: 1 1 8.5rem; background: var(--paper-2); border: 1px solid var(--rule);
+    border-radius: 11px; padding: 0.85rem 0.7rem; text-align: center;
+    font-size: 0.88rem; color: var(--ink-2);
   }
-  .flow .box b { display: block; margin-bottom: 3px; }
-  .flow .arrow { display: grid; place-items: center; color: var(--muted); font-size: 1.2rem; }
-  .big {
-    background: var(--accent); color: var(--bg);
-    border-radius: 12px; padding: 22px 24px; margin: 22px 0;
-    font-size: 1.1rem; font-weight: 600; text-align: center;
+  .flow .box b { display: block; color: var(--ink); font-size: 0.95rem; margin-bottom: 0.15rem; }
+  .flow .arrow { display: grid; place-items: center; color: var(--ink-3); font-size: 1.1rem; }
+
+  footer {
+    max-width: 76rem; margin: 0 auto; padding: 2rem var(--step) 4rem;
+    border-top: 1px solid var(--rule); color: var(--ink-3); font-size: 0.92rem;
   }
-  .big code { background: rgba(255,255,255,.18); border-color: transparent; color: inherit; }
-  footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem; }
+
+  /* ---------- 좁은 화면 ---------- */
+
+  @media (max-width: 56rem) {
+    .layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    .toc {
+      position: sticky; top: 0; z-index: 10; padding: 0;
+      background: var(--paper); border-bottom: 1px solid var(--rule); max-height: none;
+    }
+    .toc summary { display: block; }
+    .toc[open] .toc-inner { padding: 0.5rem 0 1.25rem; }
+    .toc:not([open]) .toc-inner { display: none; }
+    .step { grid-template-columns: 2.3rem minmax(0, 1fr); gap: 0.7rem; }
+    .flow .arrow { transform: rotate(90deg); }
+    .flow .box { flex-basis: 100%; }
+  }
+
   @media print {
-    body { background: #fff; color: #000; font-size: 12pt; }
-    .wrap { padding: 0; max-width: none; }
-    h2 { page-break-after: avoid; }
-    .card, .note, .steps > li { page-break-inside: avoid; }
+    body { background: #fff; color: #000; }
+    .toc { display: none; }
+    .layout { grid-template-columns: 1fr; padding-bottom: 0; }
+    section, .card, .callout, .step { page-break-inside: avoid; }
+    section h2 { page-break-after: avoid; }
   }
 </style>
 </head>
 <body>
-<div class="wrap">
 
-<h1>시작하기</h1>
-<p class="sub">Live Highlight &amp; AutoCut — 처음 받으신 분을 위한 안내</p>
+<header class="masthead">
+  <p class="eyebrow">Live Highlight &amp; AutoCut / 시작 안내</p>
+  <h1>처음 받으셨다면, 이 문서만 따라오시면 됩니다</h1>
+  <p class="lede">
+    <strong>어려운 건 없습니다.</strong> 까만 명령어 창에 뭘 입력하실 일은 없어요.
+    처음 준비하는 데 10분쯤 걸리고, 그 뒤로는 <strong>파일 하나 더블클릭</strong>이면 끝입니다.
+  </p>
+</header>
 
-<div class="lead">
-  <p><strong>어려운 건 없습니다.</strong> 까만 명령어 창에 뭘 입력하실 일은 없어요.</p>
-  <p>처음 준비하는 데 10분쯤 걸리고, 그 뒤로는 <strong>파일 하나 더블클릭</strong>이면 끝입니다.</p>
-</div>
+<div class="layout">
 
-<h2>이 두 프로그램은 뭘 해주나요?</h2>
+  <details class="toc" id="toc" open>
+    <summary>목차</summary>
+    <div class="toc-inner">
+      <div class="toc-group">
+        <p>1 · 이게 뭔가요</p>
+        <a href="#intro">두 프로그램이 하는 일</a>
+        <a href="#lh">Live Highlight</a>
+        <a href="#ac">AutoCut</a>
+        <a href="#which">언제 뭘 쓰나</a>
+      </div>
+      <div class="toc-group">
+        <p>2 · 처음 준비하기</p>
+        <a href="#account">계정 만들고 초대받기</a>
+        <a href="#desktop">GitHub Desktop 설치</a>
+        <a href="#clone">두 프로그램 받아오기</a>
+      </div>
+      <div class="toc-group">
+        <p>3 · 실행하기</p>
+        <a href="#firstrun">처음 열 때</a>
+        <a href="#screens">어떤 화면이 열리나</a>
+      </div>
+      <div class="toc-group">
+        <p>4 · 평소 쓰기</p>
+        <a href="#daily">매번 이것만 하면 됩니다</a>
+      </div>
+      <div class="toc-group">
+        <p>5 · 막혔을 때</p>
+        <a href="#trouble">문제 해결</a>
+        <a href="#help">도움 요청하는 법</a>
+      </div>
+    </div>
+  </details>
 
-<p>둘 다 <strong>긴 방송 영상을 편집하는 시간을 줄여주는</strong> 도구입니다.
-최종 편집은 평소처럼 <strong>프리미어 프로</strong>에서 하시고, 이 프로그램들은 그 앞 단계 —
-가장 지루하고 오래 걸리는 부분 — 을 대신 해줍니다.</p>
+  <main>
 
-<div class="card">
-  <h3>🔍 Live Highlight — "어디가 재밌었지?" 를 찾아줍니다</h3>
-  <p>5시간짜리 라이브 방송 녹화를 처음부터 다시 보면서 쓸 만한 장면을 골라내는 작업,
-  그걸 없애주는 프로그램입니다.</p>
-  <p>시청자 <strong>채팅 반응</strong>(갑자기 채팅이 폭주한 곳, ㅋㅋ가 쏟아진 곳, "클립!" "편집해줘" 라고 한 곳,
-  후원이 몰린 곳)과 <strong>방송자 목소리</strong>(웃음소리, 갑자기 커진 리액션)를 같이 보고,
-  <strong>재밌었을 가능성이 높은 순서대로</strong> 구간 목록을 뽑아줍니다.</p>
-  <p>목록에서 미리보기로 확인한 다음, 마음에 드는 것만 골라 프리미어로 넘기거나
-  숏츠용 세로 영상(9:16)으로 바로 뽑을 수 있습니다.</p>
-</div>
+    <!-- ══════════════ 1 · 이게 뭔가요 ══════════════ -->
 
-<div class="card">
-  <h3>✂️ AutoCut — "조용한 부분" 을 잘라줍니다</h3>
-  <p>영상을 창에 끌어다 놓으면 소리를 분석해서 <strong>아무 말 없는 구간을 잘라낸 편집본</strong>을 만들어 줍니다.
-  목소리가 확 커지는 지점에는 <strong>표시(마커)</strong>도 찍어줍니다.</p>
-  <p>결과물은 프리미어에서 열 수 있는 파일로 나옵니다. 열어보면 <strong>이미 컷편집이 된 상태에서</strong>
-  작업을 시작할 수 있습니다.</p>
-  <p>영상을 새로 만들어내는 게 아니라 "여기부터 여기까지 쓴다" 는 정보만 만드는 방식이라,
-  <strong>100GB가 넘는 파일이나 10시간짜리 영상도</strong> 문제없이 처리합니다. 화질도 그대로입니다.</p>
-</div>
+    <section id="intro">
+      <p class="sec-kicker">1 · 이게 뭔가요</p>
+      <h2>두 프로그램이 하는 일</h2>
+      <p class="prose">
+        둘 다 <strong>긴 방송 영상을 편집하는 시간을 줄여주는</strong> 도구입니다.
+        최종 편집은 평소처럼 <strong>프리미어 프로</strong>에서 하시고,
+        이 프로그램들은 그 앞 단계 — 가장 지루하고 오래 걸리는 부분 — 을 대신 해줍니다.
+      </p>
+      <div class="flow">
+        <div class="box"><b>📹 방송 녹화</b>OBS로 저장한 파일</div>
+        <div class="arrow">→</div>
+        <div class="box"><b>🔍 Live Highlight</b>쓸 구간 골라내기</div>
+        <div class="arrow">→</div>
+        <div class="box"><b>✂️ AutoCut</b>군더더기 잘라내기</div>
+        <div class="arrow">→</div>
+        <div class="box"><b>🎬 프리미어</b>마무리 편집</div>
+      </div>
+      <p class="prose muted">
+        두 프로그램 모두 <strong>인터넷에 영상을 올리지 않습니다.</strong> 전부 본인 맥 안에서만 처리됩니다.
+      </p>
+    </section>
 
-<h3>그래서 순서가 어떻게 되나요?</h3>
+    <section id="lh">
+      <p class="sec-kicker">1 · 이게 뭔가요</p>
+      <h2>🔍 Live Highlight — "어디가 재밌었지?" 를 찾아줍니다</h2>
+      <p class="prose">
+        5시간짜리 라이브 방송 녹화를 처음부터 다시 보면서 쓸 만한 장면을 골라내는 작업,
+        그걸 없애주는 프로그램입니다.
+      </p>
+      <div class="card">
+        <span class="card-tag">무엇을 보고 찾나</span>
+        <div class="tablewrap">
+          <table>
+            <tr><th>💬 시청자 채팅</th><td>갑자기 채팅이 폭주한 곳, <code>ㅋㅋ</code> 가 쏟아진 곳,
+              "클립!" "편집해줘" 라고 <strong>직접 지목한 곳</strong>, 후원이 몰린 곳</td></tr>
+            <tr><th>🎙 방송자 목소리</th><td>웃음소리, 갑자기 커진 리액션</td></tr>
+          </table>
+        </div>
+      </div>
+      <p class="prose">
+        이 신호들을 같이 보고 <strong>재밌었을 가능성이 높은 순서대로</strong> 구간 목록을 뽑아줍니다.
+        목록에서 미리보기로 확인한 다음, 마음에 드는 것만 골라 프리미어로 넘기거나
+        <strong>숏츠용 세로 영상(9:16)</strong>으로 바로 뽑을 수 있습니다.
+      </p>
+    </section>
 
-<div class="flow">
-  <div class="box"><b>📹 방송 녹화</b>OBS로 저장한 파일</div>
-  <div class="arrow">→</div>
-  <div class="box"><b>🔍 Live Highlight</b>쓸 구간 골라내기</div>
-  <div class="arrow">→</div>
-  <div class="box"><b>✂️ AutoCut</b>군더더기 잘라내기</div>
-  <div class="arrow">→</div>
-  <div class="box"><b>🎬 프리미어</b>마무리 편집</div>
-</div>
+    <section id="ac">
+      <p class="sec-kicker">1 · 이게 뭔가요</p>
+      <h2>✂️ AutoCut — "조용한 부분" 을 잘라줍니다</h2>
+      <p class="prose">
+        영상을 창에 끌어다 놓으면 소리를 분석해서 <strong>아무 말 없는 구간을 잘라낸 편집본</strong>을
+        만들어 줍니다. 목소리가 확 커지는 지점에는 <strong>표시(마커)</strong>도 찍어줍니다.
+      </p>
+      <p class="prose">
+        결과물은 프리미어에서 열 수 있는 파일로 나옵니다. 열어보면
+        <strong>이미 컷편집이 된 상태에서</strong> 작업을 시작할 수 있습니다.
+      </p>
+      <div class="callout is-key">
+        <span class="callout-label">큰 파일도 괜찮습니다</span>
+        <p class="prose">
+          영상을 새로 만들어내는 게 아니라 "여기부터 여기까지 쓴다" 는 정보만 만드는 방식입니다.
+          그래서 <strong>100GB가 넘는 파일이나 10시간짜리 영상도</strong> 문제없이 처리하고,
+          <strong>화질도 그대로</strong>입니다.
+        </p>
+      </div>
+    </section>
 
-<div class="tablewrap">
-<table>
-  <tr><th>이럴 때</th><th>이걸 쓰세요</th></tr>
-  <tr><td>긴 방송에서 하이라이트·숏츠 뽑을 때</td><td><strong>Live Highlight</strong></td></tr>
-  <tr><td>영상의 빈 시간·정적을 걷어내고 싶을 때</td><td><strong>AutoCut</strong></td></tr>
-  <tr><td>둘 다 필요할 때</td><td>Live Highlight로 구간을 고른 뒤, 그 결과를 AutoCut에</td></tr>
-</table>
-</div>
+    <section id="which">
+      <p class="sec-kicker">1 · 이게 뭔가요</p>
+      <h2>언제 뭘 쓰나</h2>
+      <div class="tablewrap">
+        <table>
+          <tr><th>이럴 때</th><th>이걸 쓰세요</th></tr>
+          <tr><td>긴 방송에서 하이라이트·숏츠 뽑을 때</td><td><strong>🔍 Live Highlight</strong></td></tr>
+          <tr><td>영상의 빈 시간·정적을 걷어내고 싶을 때</td><td><strong>✂️ AutoCut</strong></td></tr>
+          <tr><td>둘 다 필요할 때</td><td>Live Highlight로 구간을 고른 뒤, 그 결과를 AutoCut에</td></tr>
+        </table>
+      </div>
+    </section>
 
-<p style="color:var(--muted)">두 프로그램 모두 <strong>인터넷에 영상을 올리지 않습니다.</strong>
-전부 본인 맥 안에서만 처리됩니다.</p>
+    <!-- ══════════════ 2 · 처음 준비하기 ══════════════ -->
 
-<h2>준비하기 (처음 한 번만, 10분)</h2>
+    <section id="account">
+      <p class="sec-kicker">2 · 처음 준비하기</p>
+      <h2>계정 만들고 초대받기</h2>
+      <p class="prose">
+        이 프로그램들은 아무나 볼 수 없게 잠가 두었습니다. 그래서 먼저 <strong>초대를 받으셔야</strong> 합니다.
+      </p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <h3>가입하기</h3>
+            <p class="prose"><a href="https://github.com">github.com</a> 에서 가입합니다.
+              이메일과 비밀번호만 있으면 됩니다.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <h3>아이디 알려주기</h3>
+            <p class="prose">가입할 때 정한 <strong>아이디를 공유해 주신 분께 알려주세요.</strong>
+              그래야 초대를 보낼 수 있습니다.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <h3>초대 수락하기</h3>
+            <p class="prose">초대 메일이 오면 <strong>Accept invitation</strong>(초대 수락) 버튼을 누릅니다.</p>
+            <p class="step-note">프로그램이 두 개라 <strong>메일도 두 통</strong> 옵니다. 둘 다 수락해 주세요.
+              안 보이면 스팸함도 확인해 보세요.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<ol class="steps">
+    <section id="desktop">
+      <p class="sec-kicker">2 · 처음 준비하기</p>
+      <h2>GitHub Desktop 설치</h2>
+      <p class="prose">
+        프로그램 파일을 내 컴퓨터로 가져오는 앱입니다. 클릭만으로 됩니다.
+      </p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <h3>내려받아 설치</h3>
+            <p class="prose"><a href="https://desktop.github.com">desktop.github.com</a> 에서 받으시면 됩니다.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <h3>로그인</h3>
+            <p class="prose">앱을 열고 <strong>앞에서 만든 계정으로 로그인</strong>합니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-<li>
-<h3>GitHub 계정 만들고 초대 받기</h3>
-<p>이 프로그램들은 아무나 볼 수 없게 잠가 두었습니다. 그래서 먼저 <strong>초대를 받으셔야</strong> 합니다.</p>
-<ul>
-  <li><a href="https://github.com">github.com</a> 에서 가입합니다. 이메일과 비밀번호만 있으면 됩니다.</li>
-  <li>가입할 때 정한 <strong>아이디를 공유해 주신 분께 알려주세요.</strong> 그래야 초대를 보낼 수 있습니다.</li>
-  <li>초대 메일이 오면 <strong>Accept invitation</strong>(초대 수락) 버튼을 누릅니다. <strong>프로그램이 두 개니 메일도 두 통</strong> 옵니다. 둘 다 수락해 주세요.</li>
-</ul>
-<p style="color:var(--muted)">메일이 안 보이면 스팸함도 확인해 보세요.</p>
-</li>
+    <section id="clone">
+      <p class="sec-kicker">2 · 처음 준비하기</p>
+      <h2>두 프로그램 받아오기</h2>
+      <p class="prose">
+        앱 위쪽 메뉴에서 <strong>File</strong>(파일) → <strong>Clone repository</strong>(저장소 복제) 를 누릅니다.
+        목록에 두 개가 보일 겁니다. <strong>하나씩 두 번</strong> 받아주세요.
+      </p>
+      <div class="tablewrap">
+        <table>
+          <tr><th>목록에 이렇게 보입니다</th><th>이 프로그램입니다</th></tr>
+          <tr><td><code>livehighlight</code></td><td>🔍 Live Highlight</td></tr>
+          <tr><td><code>autocut</code></td><td>✂️ AutoCut</td></tr>
+        </table>
+      </div>
+      <p class="prose">고르고 <strong>Clone</strong> 버튼을 누르면 잠시 뒤 다 들어옵니다.</p>
+      <div class="callout">
+        <span class="callout-label">"어디에 저장할까요?" 라고 물어보면</span>
+        <p class="prose">
+          기본값 그대로 두셔도 되고, 나중에 찾기 쉬운 곳으로 바꾸셔도 됩니다.
+          <strong>어디에 저장했는지만 기억해 두세요.</strong>
+        </p>
+      </div>
+    </section>
 
-<li>
-<h3>GitHub Desktop 설치하기</h3>
-<p>프로그램 파일을 내 컴퓨터로 가져오는 앱입니다. 클릭만으로 됩니다.</p>
-<ul>
-  <li><a href="https://desktop.github.com">desktop.github.com</a> 에서 내려받아 설치합니다.</li>
-  <li>앱을 열고 <strong>1번에서 만든 계정으로 로그인</strong>합니다.</li>
-</ul>
-</li>
+    <!-- ══════════════ 3 · 실행하기 ══════════════ -->
 
-<li>
-<h3>두 프로그램 받아오기</h3>
-<p>앱 위쪽 메뉴에서 <strong>File</strong>(파일) → <strong>Clone repository</strong>(저장소 복제) 를 누릅니다.</p>
-<p>목록에 두 개가 보일 겁니다. <strong>하나씩 두 번</strong> 받아주세요.</p>
-<div class="tablewrap">
-<table>
-  <tr><th>목록에 이렇게 보입니다</th><th>이 프로그램입니다</th></tr>
-  <tr><td><code>livehighlight</code></td><td>🔍 Live Highlight</td></tr>
-  <tr><td><code>autocut</code></td><td>✂️ AutoCut</td></tr>
-</table>
-</div>
-<p>고르고 <strong>Clone</strong> 버튼을 누르면 잠시 뒤 다 들어옵니다.</p>
-<div class="note">
-<p><strong>"어디에 저장할까요?"</strong> 하고 물어봅니다. 기본값 그대로 두셔도 되고,
-나중에 찾기 쉬운 곳으로 바꾸셔도 됩니다. <strong>어디에 저장했는지만 기억해 두세요.</strong></p>
-</div>
-</li>
+    <section id="firstrun">
+      <p class="sec-kicker">3 · 실행하기</p>
+      <h2>처음 열 때</h2>
+      <p class="prose">
+        GitHub Desktop 위쪽에서 실행할 프로그램을 고른 다음,
+        <strong>Repository</strong>(저장소) → <strong>Show in Finder</strong>(파인더에서 보기) 를 누르면 폴더가 열립니다.
+      </p>
+      <p class="prose">
+        폴더 안에 <strong><code>업데이트.command</code></strong> 라는 파일이 있습니다.
+        <strong>이게 실행 버튼</strong>이라고 생각하시면 됩니다. 두 폴더 모두 똑같이 들어 있습니다.
+      </p>
 
-</ol>
+      <div class="callout is-warn">
+        <span class="callout-label">⚠️ 처음에는 그냥 더블클릭하면 안 열립니다</span>
+        <p class="prose">
+          맥이 "확인되지 않은 개발자가 만든 파일" 이라며 막습니다.
+          바이러스라서가 아니라, <strong>애플에 돈을 내고 등록한 프로그램이 아니라서</strong> 그렇습니다.
+        </p>
+        <p class="prose"><strong>처음 한 번만</strong> 이렇게 열어주세요:</p>
+        <p class="prose">
+          <strong>파일을 마우스 오른쪽 버튼으로 클릭 → <code>열기</code> → (경고창이 뜨면 다시) <code>열기</code></strong>
+        </p>
+        <p class="prose">
+          한 번 이렇게 열고 나면 그다음부터는 그냥 더블클릭해도 잘 열립니다.
+          <strong>프로그램이 두 개니 각각 한 번씩</strong> 해주셔야 합니다.
+        </p>
+      </div>
 
-<h2>실행하기</h2>
+      <p class="prose">까만 창이 뜨면서 글자가 주르륵 올라갑니다. <strong>정상입니다.</strong></p>
 
-<p>GitHub Desktop 위쪽에서 실행할 프로그램을 고른 다음,
-<strong>Repository</strong>(저장소) → <strong>Show in Finder</strong>(파인더에서 보기) 를 누르면 폴더가 열립니다.</p>
+      <div class="callout is-warn">
+        <span class="callout-label">⏳ 처음 한 번은 3~5분 걸립니다</span>
+        <p class="prose">
+          프로그램이 돌아가는 데 필요한 것들을 인터넷에서 받아오는 중입니다.
+          <strong>화면이 멈춘 것처럼 보여도 고장 난 게 아닙니다.</strong> 커피 한 잔 하고 오세요.
+          두 번째부터는 몇 초 만에 바로 뜹니다.
+        </p>
+      </div>
+    </section>
 
-<p>폴더 안에 <strong><code>업데이트.command</code></strong> 라는 파일이 있습니다.
-<strong>이게 실행 버튼</strong>이라고 생각하시면 됩니다. 두 폴더 모두 똑같이 들어 있습니다.</p>
+    <section id="screens">
+      <p class="sec-kicker">3 · 실행하기</p>
+      <h2>어떤 화면이 열리나</h2>
+      <div class="tablewrap">
+        <table>
+          <tr><th>프로그램</th><th>이렇게 열립니다</th></tr>
+          <tr>
+            <td>🔍 <strong>Live&nbsp;Highlight</strong></td>
+            <td><strong>브라우저(크롬·사파리) 창이 저절로 열리면서</strong> 작업 화면이 나타납니다.
+              웹사이트처럼 생긴 화면에서 작업하시면 됩니다.</td>
+          </tr>
+          <tr>
+            <td>✂️ <strong>AutoCut</strong></td>
+            <td><strong>프로그램 창이 뜹니다.</strong> 여기에 영상 파일을 끌어다 놓으세요.</td>
+          </tr>
+        </table>
+      </div>
 
-<div class="note">
-<p><strong>⚠️ 잠깐 — 처음에는 그냥 더블클릭하면 안 열립니다</strong></p>
-<p>맥이 "확인되지 않은 개발자가 만든 파일" 이라며 막습니다.
-바이러스라서가 아니라, <strong>애플에 돈을 내고 등록한 프로그램이 아니라서</strong> 그렇습니다.</p>
-<p><strong>처음 한 번만</strong> 이렇게 열어주세요:</p>
-<p style="font-size:1.05rem"><strong>파일을 마우스 오른쪽 버튼으로 클릭 → <code>열기</code> → (경고창이 뜨면 다시) <code>열기</code></strong></p>
-<p>한 번 이렇게 열고 나면, 그다음부터는 그냥 더블클릭해도 잘 열립니다.
-<strong>프로그램이 두 개니 각각 한 번씩</strong> 해주셔야 합니다.</p>
-</div>
+      <div class="callout is-warn">
+        <span class="callout-label">Live Highlight — 까만 창을 닫지 마세요</span>
+        <p class="prose">
+          브라우저 화면은 까만 창이 살아 있는 동안에만 작동합니다.
+          까만 창을 닫으면 <strong>브라우저 화면도 더 이상 동작하지 않습니다.</strong>
+          다 쓰고 <strong>끝내실 때</strong> 까만 창을 닫으시면 됩니다.
+        </p>
+        <p class="prose">
+          브라우저가 저절로 안 열리면 주소창에 <code>http://127.0.0.1:8777</code> 을 직접 입력하세요.
+          인터넷 주소처럼 보이지만 <strong>내 컴퓨터 안에서만 도는 화면</strong>입니다.
+        </p>
+      </div>
+    </section>
 
-<p>까만 창이 뜨면서 글자가 주르륵 올라갑니다. <strong>정상입니다.</strong></p>
+    <!-- ══════════════ 4 · 평소 쓰기 ══════════════ -->
 
-<div class="note">
-<p><strong>⏳ 처음 한 번은 3~5분 걸립니다</strong></p>
-<p>프로그램이 돌아가는 데 필요한 것들을 인터넷에서 받아오는 중입니다.
-<strong>화면이 멈춘 것처럼 보여도 고장 난 게 아닙니다.</strong> 커피 한 잔 하고 오세요.</p>
-<p>두 번째부터는 몇 초 만에 바로 뜹니다.</p>
-</div>
+    <section id="daily">
+      <p class="sec-kicker">4 · 평소 쓰기</p>
+      <h2>매번 이것만 하면 됩니다</h2>
+      <div class="action">그냥 <code>업데이트.command</code> 를 더블클릭하세요.</div>
+      <p class="prose">
+        프로그램을 고쳤다는 연락을 받으셨을 때도, 평소에 그냥 쓰실 때도 <strong>똑같이 이 파일</strong>입니다.
+        최신 버전을 알아서 받아오고 바로 실행까지 됩니다.
+        다시 설치하거나 뭘 지우실 필요 없습니다.
+      </p>
+      <p class="prose muted">
+        인터넷이 안 되는 곳이어도 괜찮습니다. 최신 버전을 못 받으면
+        지금 갖고 계신 버전으로 그냥 실행됩니다.
+      </p>
+    </section>
 
-<h3>준비가 끝나면</h3>
+    <!-- ══════════════ 5 · 막혔을 때 ══════════════ -->
 
-<div class="tablewrap">
-<table>
-  <tr><th>프로그램</th><th>이렇게 열립니다</th></tr>
-  <tr>
-    <td>🔍 <strong>Live Highlight</strong></td>
-    <td><strong>브라우저(크롬·사파리) 창이 저절로 열리면서</strong> 작업 화면이 나타납니다.
-    웹사이트처럼 생긴 화면에서 작업하시면 됩니다.</td>
-  </tr>
-  <tr>
-    <td>✂️ <strong>AutoCut</strong></td>
-    <td><strong>프로그램 창이 뜹니다.</strong> 여기에 영상 파일을 끌어다 놓으세요.</td>
-  </tr>
-</table>
-</div>
+    <section id="trouble">
+      <p class="sec-kicker">5 · 막혔을 때</p>
+      <h2>문제 해결</h2>
+      <div class="tablewrap">
+        <table>
+          <tr><th>이런 일이 생기면</th><th>이렇게 해보세요</th></tr>
+          <tr><td>"확인되지 않은 개발자" 라고 뜬다</td><td>파일을 <strong>오른쪽 클릭 → 열기 → 열기</strong></td></tr>
+          <tr><td>까만 창이 뜨자마자 사라진다</td><td>오른쪽 클릭 → 열기 로 다시 해보세요</td></tr>
+          <tr><td>한참 아무 반응이 없다</td><td>처음 실행이라면 정상입니다. 5분은 기다려 주세요</td></tr>
+          <tr><td>브라우저가 저절로 안 열린다<br><span class="muted">Live Highlight</span></td>
+              <td>주소창에 <code>http://127.0.0.1:8777</code> 직접 입력</td></tr>
+          <tr><td>브라우저 화면이 갑자기 안 된다<br><span class="muted">Live Highlight</span></td>
+              <td>까만 창이 닫히지 않았는지 확인해 주세요</td></tr>
+          <tr><td>"업데이트를 받지 못했습니다"</td><td>그냥 쓰셔도 됩니다. 인터넷 연결을 확인해 보세요</td></tr>
+        </table>
+      </div>
+    </section>
 
-<div class="note">
-<p><strong>Live Highlight 를 쓰실 때 — 까만 창을 닫지 마세요</strong></p>
-<p>브라우저 화면은 까만 창이 살아 있는 동안에만 작동합니다.
-까만 창을 닫으면 <strong>브라우저 화면도 더 이상 동작하지 않습니다.</strong></p>
-<p>다 쓰고 <strong>끝내실 때</strong> 까만 창을 닫으시면 됩니다.</p>
-<p>브라우저가 저절로 안 열리면 주소창에 <code>http://127.0.0.1:8777</code> 을 직접 입력하세요.
-인터넷 주소처럼 보이지만 <strong>내 컴퓨터 안에서만 도는 화면</strong>입니다.</p>
-</div>
+    <section id="help">
+      <p class="sec-kicker">5 · 막혔을 때</p>
+      <h2>도움 요청하는 법</h2>
+      <div class="callout is-key">
+        <span class="callout-label">이렇게 알려주시면 가장 빠릅니다</span>
+        <p class="prose">
+          <strong>까만 창에 나온 글자를 사진으로 찍거나, 드래그해서 복사해 보내주세요.</strong>
+        </p>
+        <p class="prose">
+          무슨 뜻인지 몰라도 괜찮습니다. 그대로 보내주시면 됩니다.
+        </p>
+      </div>
+    </section>
 
-<h2>다음부터는 이것만 하시면 됩니다</h2>
-
-<div class="big">
-그냥 <code>업데이트.command</code> 를 더블클릭하세요.
-</div>
-
-<p>프로그램을 고쳤다는 연락을 받으셨을 때도, 평소에 그냥 쓰실 때도 <strong>똑같이 이 파일</strong>입니다.
-최신 버전을 알아서 받아오고 바로 실행까지 됩니다.
-다시 설치하거나 뭘 지우실 필요 없습니다.</p>
-
-<p style="color:var(--muted)">인터넷이 안 되는 곳이어도 괜찮습니다.
-최신 버전을 못 받으면 지금 갖고 계신 버전으로 그냥 실행됩니다.</p>
-
-<h2>뭔가 이상할 때</h2>
-
-<div class="tablewrap">
-<table>
-  <tr><th>이런 일이 생기면</th><th>이렇게 해보세요</th></tr>
-  <tr><td>"확인되지 않은 개발자" 라고 뜬다</td><td>파일을 <strong>오른쪽 클릭 → 열기 → 열기</strong></td></tr>
-  <tr><td>까만 창이 뜨자마자 사라진다</td><td>오른쪽 클릭 → 열기 로 다시 해보세요</td></tr>
-  <tr><td>한참 아무 반응이 없다</td><td>처음 실행이라면 정상입니다. 5분은 기다려 주세요</td></tr>
-  <tr><td>브라우저가 저절로 안 열린다<br><span style="color:var(--muted)">(Live Highlight)</span></td><td>주소창에 <code>http://127.0.0.1:8777</code> 직접 입력</td></tr>
-  <tr><td>브라우저 화면이 갑자기 안 된다<br><span style="color:var(--muted)">(Live Highlight)</span></td><td>까만 창이 닫히지 않았는지 확인해 주세요</td></tr>
-  <tr><td>"업데이트를 받지 못했습니다"</td><td>그냥 쓰셔도 됩니다. 인터넷 연결을 확인해 보세요</td></tr>
-  <tr><td>그 밖에 빨간 글씨가 뜬다</td><td>아래를 봐주세요 👇</td></tr>
-</table>
-</div>
-
-<h3>막히면 이렇게 알려주세요</h3>
-
-<div class="card">
-<p><strong>까만 창에 나온 글자를 사진으로 찍거나, 드래그해서 복사해 보내주세요.</strong></p>
-<p>무슨 뜻인지 몰라도 괜찮습니다. 그대로 보내주시면 됩니다. 그게 가장 빠릅니다.</p>
+  </main>
 </div>
 
 <footer>
-<p>각 프로그램의 자세한 사용법은 받으신 폴더 안 <code>사용법.md</code> 에 정리되어 있습니다.</p>
+  각 프로그램의 자세한 사용법은 받으신 폴더 안 <code>사용법.md</code> 에 정리되어 있습니다.
 </footer>
 
-</div>
+<script>
+  // 스크롤에 따라 목차의 현재 위치를 표시한다.
+  (function () {
+    var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+    var map = {};
+    var targets = [];
+    links.forEach(function (a) {
+      var el = document.getElementById(a.getAttribute('href').slice(1));
+      if (el) { map[el.id] = a; targets.push(el); }
+    });
+    if (!targets.length) return;
+
+    var current = null;
+    function setActive(id) {
+      if (id === current) return;
+      current = id;
+      links.forEach(function (a) { a.classList.remove('is-active'); });
+      if (map[id]) map[id].classList.add('is-active');
+    }
+
+    // 화면 위쪽 기준선을 지난 섹션 중 가장 아래 것을 현재 항목으로 본다.
+    function update() {
+      var line = window.innerHeight * 0.3;
+      var best = targets[0];
+      for (var i = 0; i < targets.length; i++) {
+        if (targets[i].getBoundingClientRect().top <= line) best = targets[i];
+      }
+      // 맨 아래까지 내렸으면 마지막 항목을 켠다.
+      if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 2) {
+        best = targets[targets.length - 1];
+      }
+      setActive(best.id);
+    }
+
+    var queued = false;
+    function onScroll() {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(function () { queued = false; update(); });
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    update();
+
+    // 좁은 화면에서는 목차를 접어두고, 항목을 고르면 다시 접는다.
+    var toc = document.getElementById('toc');
+    var narrow = window.matchMedia('(max-width: 56rem)');
+    function sync() { toc.open = !narrow.matches; }
+    sync();
+    narrow.addEventListener ? narrow.addEventListener('change', sync) : narrow.addListener(sync);
+    links.forEach(function (a) {
+      a.addEventListener('click', function () { if (narrow.matches) toc.open = false; });
+    });
+  })();
+</script>
+
 </body>
 </html>
