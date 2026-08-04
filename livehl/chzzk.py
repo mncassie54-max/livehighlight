@@ -164,16 +164,18 @@ def fetch(url: str, out_dir: str, progress: Progress = None) -> Dict[str, Any]:
 
     with open(path, "w", encoding="utf-8") as f:
         while True:
+            # 이 API 는 지정한 시각부터 "영상 끝까지" 를 돌려준다 (한 번에 오는 양에 상한이 있다).
+            # previousVideoChatSize 는 50 이외의 값을 주면 거절하므로 아예 넣지 않는다.
             data, err = _get(
-                "/service/v1/videos/%s/chats?playerMessageTime=%d"
-                "&previousVideoChatSize=0&nextVideoChatSize=%d" % (no, t_ms, PAGE)
+                "/service/v1/videos/%s/chats?playerMessageTime=%d" % (no, t_ms)
             )
-            if err and count == 0:
-                info["error"] = err          # 한 건도 못 받았으면 이유를 남긴다
+            if err:
+                if count == 0:
+                    info["error"] = err      # 한 건도 못 받았으면 이유를 남긴다
                 break
             chats = (data or {}).get("videoChats")
             if not isinstance(chats, list) or not chats:
-                break
+                break                        # 앞으로 더 없으면 끝
 
             newest = t_ms
             added = 0
@@ -193,23 +195,26 @@ def fetch(url: str, out_dir: str, progress: Progress = None) -> Dict[str, Any]:
                 added += 1
                 newest = max(newest, ms)
 
-            # 더 이상 앞으로 못 나가면 끝난 것으로 본다
+            if progress:
+                if total_ms > 0:
+                    progress(min(0.95, newest / float(total_ms)),
+                             "치지직 채팅 %d개 수신 중…" % count)
+                else:
+                    progress(0.5, "치지직 채팅 %d개 수신 중…" % count)
+
+            # 새로 받은 게 없거나 시간이 앞으로 안 가면 다 받은 것이다.
+            # (같은 시각에 메시지가 몰려 상한에 걸리는 경우를 대비해 1ms 씩 민다)
+            if added == 0:
+                break
             if newest <= t_ms:
                 stall += 1
-                if stall >= 2:
+                if stall >= 3:
                     break
-                t_ms += 60_000  # 조용한 구간은 건너뛴다
+                t_ms += 1
             else:
                 stall = 0
                 t_ms = newest + 1
 
-            if progress and total_ms > 0:
-                progress(min(0.95, t_ms / float(total_ms)),
-                         "치지직 채팅 %d개 수신 중…" % count)
-            if total_ms and t_ms > total_ms:
-                break
-            if added == 0 and stall == 0:
-                break
             time.sleep(0.05)  # 너무 빠르게 두드리지 않는다
 
     info["chat_file"] = path if count else None
