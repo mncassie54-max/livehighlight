@@ -1178,10 +1178,15 @@
       <p class="sec-kicker">4 · AutoCut 쓰는 법</p>
       <h2>영상 넣기</h2>
       <p class="prose">
-        창 안으로 <strong>영상 파일을 끌어다 놓습니다.</strong> 한 번에 한 개씩입니다.
+        창 안으로 <strong>영상 파일을 끌어다 놓습니다.</strong>
+        여러 개를 한꺼번에 놓아도 됩니다 — 순서대로 처리합니다.
         <strong>설정은 전부 그대로 두셔도 됩니다.</strong>
       </p>
       <div class="screen">미디어 확인 → 오디오 분석 …% → 무음 감지 → 강조 감지 → XML 생성 → <b>완료</b></div>
+      <p class="prose">
+        잘못 넣었거나 그만하고 싶으면 <span class="btn">중지</span> 를 누르세요.
+        만들던 파일은 남기지 않습니다.
+      </p>
       <div class="tablewrap">
         <table>
           <tr><th>영상 길이</th><th>걸리는 시간</th></tr>
@@ -1190,7 +1195,14 @@
           <tr><td>10시간</td><td>약 4분</td></tr>
         </table>
       </div>
-      <p class="prose">끝나면 <strong>원본과 같은 폴더</strong>에 파일이 하나 생깁니다.</p>
+      <p class="prose">
+        끝나면 창이 <strong>얼마나 줄었는지</strong> 알려줍니다.
+        프리미어를 열기 전에 이 줄만 보고 판단하시면 됩니다.
+      </p>
+      <div class="screen">완료 → 촬영본_autocut.xml
+<b>1시간 4분 → 38분 12초  ·  212조각 (40% 덜어냄)</b>
+프리미어에서 File → Import 로 이 XML을 여세요.</div>
+      <p class="prose">그리고 <strong>원본과 같은 폴더</strong>에 파일이 하나 생깁니다.</p>
       <div class="screen">촬영본.mp4                <span class="c">← 원본. 그대로 있습니다</span>
 촬영본_autocut.xml        <span class="c">← 프리미어에서 열 파일</span></div>
     </section>
@@ -1239,6 +1251,12 @@
         마음에 안 들면 <strong>설정을 바꾸고 같은 영상을 다시 끌어다 놓으면</strong> 됩니다.
         결과 파일은 덮어써집니다.
       </p>
+      <p class="prose">
+        한쪽으로 너무 치우친 결과가 나오면 창이 <strong>어느 쪽으로 옮기라고 알려줍니다.</strong>
+        프리미어를 열어보고 되돌아올 필요가 없습니다.
+      </p>
+      <div class="screen">4분 0초 → 4분 0초  ·  1조각 (0% 덜어냄)
+<b>⚠️ 잘라낼 무음이 없었습니다 — 무음 임계값을 -30 쪽으로 옮겨 다시 해 보세요.</b></div>
       <div class="tablewrap">
         <table>
           <tr><th>설정</th><th>기본값</th><th>무슨 뜻인가</th></tr>
