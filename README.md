@@ -46,6 +46,9 @@ OBS로 켠 장시간 라이브 방송에서 **재밌는 구간을 자동으로 �
 처음 실행하면 가상환경(`.venv`)과 의존성을 자동으로 설치하고 브라우저를 띄운다.
 `http://127.0.0.1:8777`
 
+터미널을 안 쓴다면 Finder에서 **`실행.command` 를 더블클릭**해도 같다.
+**`업데이트.command`** 는 `git pull` 로 최신 버전을 받은 뒤 실행한다.
+
 의존성은 `numpy`, `yt-dlp`, `imageio-ffmpeg` 뿐이다. Node나 Homebrew는 필요 없다.
 ffmpeg는 `imageio-ffmpeg`에 번들된 정적 바이너리를 자동으로 쓴다.
 `brew install ffmpeg`로 직접 설치해두면 그쪽을 우선 사용한다(ffprobe도 함께 쓸 수 있어 약간 더 정확하다).
@@ -61,6 +64,34 @@ ffmpeg는 `imageio-ffmpeg`에 번들된 정적 바이너리를 자동으로 쓴�
 ```bash
 ./start.sh --port 8888
 ```
+
+## 다른 사람에게 공유하기
+
+계속 수정할 예정이라면 GitHub로 공유하는 게 압도적으로 편하다. **고칠 때마다 새로 보낼 필요가 없다.**
+
+**처음 한 번만 — 상대방 초대**
+
+저장소 → **Settings** → **Collaborators** → **Add people** → 상대방 GitHub 아이디 입력 → 권한은 **Read** 로 충분하다.
+
+그리고 [받는분_안내.md](받는분_안내.md) 링크를 보낸다. GitHub Desktop 설치부터 실행까지 클릭만으로 하는 방법이 적혀 있다.
+
+**그 뒤로 — 고칠 때마다**
+
+```bash
+git add -A && git commit -m "고친 내용" && git push
+```
+
+상대방은 **`업데이트.command` 를 더블클릭**하면 끝이다. 최신 버전을 받아서 바로 실행된다.
+터미널도, GitHub Desktop을 여는 것도 필요 없다.
+
+> `requirements.txt` 가 바뀐 경우에만 패키지를 다시 설치한다.
+> 코드만 고쳤을 때는 업데이트가 몇 초 안에 끝난다.
+
+**터미널을 쓰는 상대라면** `./start.sh` 를 그대로 써도 된다.
+`실행.command` / `업데이트.command` 는 Finder 더블클릭용 껍데기일 뿐 하는 일은 같다.
+
+**zip으로 보내야 한다면** — GitHub 계정을 안 만들려는 상대에게는 `./package.sh` 로 만든 zip을 보낸다.
+단 고칠 때마다 다시 만들어 보내야 한다.
 
 ## 사용 순서
 
