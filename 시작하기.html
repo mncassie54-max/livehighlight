@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>시작하기 — Live Highlight & AutoCut</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #1a1a1a;
+    --muted: #666;
+    --line: #e3e3e3;
+    --card: #f7f7f8;
+    --accent: #2f6f4f;
+    --accent-soft: #eaf4ee;
+    --warn: #8a5a00;
+    --warn-soft: #fdf4e3;
+    --maxw: 760px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16181c; --fg: #e8e8e8; --muted: #9aa0a6; --line: #2e3238;
+      --card: #1e2126; --accent: #7fc7a0; --accent-soft: #1b2b22;
+      --warn: #e0b063; --warn-soft: #2a2318;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    line-height: 1.75; font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 48px 20px 96px; }
+  h1 { font-size: 1.9rem; line-height: 1.3; margin: 0 0 8px; letter-spacing: -0.02em; }
+  .sub { color: var(--muted); margin: 0 0 40px; font-size: 1.05rem; }
+  h2 {
+    font-size: 1.35rem; margin: 56px 0 16px; padding-top: 24px;
+    border-top: 1px solid var(--line); letter-spacing: -0.01em;
+  }
+  h3 { font-size: 1.08rem; margin: 32px 0 10px; }
+  p { margin: 0 0 14px; }
+  ul, ol { margin: 0 0 14px; padding-left: 22px; }
+  li { margin: 6px 0; }
+  strong { font-weight: 650; }
+  code {
+    background: var(--card); border: 1px solid var(--line); border-radius: 5px;
+    padding: 1px 6px; font-size: 0.9em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  a { color: var(--accent); text-underline-offset: 2px; }
+  .lead {
+    background: var(--accent-soft); border-radius: 12px;
+    padding: 20px 22px; margin: 0 0 8px;
+  }
+  .lead p:last-child { margin-bottom: 0; }
+  .card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 12px; padding: 20px 22px; margin: 18px 0;
+  }
+  .card h3 { margin-top: 0; }
+  .card p:last-child { margin-bottom: 0; }
+  .note {
+    background: var(--warn-soft); border-left: 3px solid var(--warn);
+    border-radius: 0 8px 8px 0; padding: 16px 18px; margin: 18px 0;
+  }
+  .note strong { color: var(--warn); }
+  .note p:last-child { margin-bottom: 0; }
+  .steps { counter-reset: s; list-style: none; padding: 0; margin: 0; }
+  .steps > li {
+    counter-increment: s; position: relative;
+    padding: 0 0 4px 46px; margin: 0 0 28px;
+  }
+  .steps > li::before {
+    content: counter(s); position: absolute; left: 0; top: 1px;
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--accent); color: var(--bg);
+    display: grid; place-items: center;
+    font-weight: 700; font-size: 0.95rem;
+  }
+  .steps > li > h3 { margin: 2px 0 8px; }
+  .tablewrap { overflow-x: auto; margin: 18px 0; }
+  table { border-collapse: collapse; width: 100%; min-width: 460px; font-size: 0.95rem; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-weight: 650; background: var(--card); white-space: nowrap; }
+  .flow {
+    display: flex; flex-wrap: wrap; align-items: stretch;
+    gap: 10px; margin: 20px 0;
+  }
+  .flow .box {
+    flex: 1 1 150px; background: var(--card); border: 1px solid var(--line);
+    border-radius: 10px; padding: 14px; text-align: center; font-size: 0.92rem;
+  }
+  .flow .box b { display: block; margin-bottom: 3px; }
+  .flow .arrow { display: grid; place-items: center; color: var(--muted); font-size: 1.2rem; }
+  .big {
+    background: var(--accent); color: var(--bg);
+    border-radius: 12px; padding: 22px 24px; margin: 22px 0;
+    font-size: 1.1rem; font-weight: 600; text-align: center;
+  }
+  .big code { background: rgba(255,255,255,.18); border-color: transparent; color: inherit; }
+  footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem; }
+  @media print {
+    body { background: #fff; color: #000; font-size: 12pt; }
+    .wrap { padding: 0; max-width: none; }
+    h2 { page-break-after: avoid; }
+    .card, .note, .steps > li { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>시작하기</h1>
+<p class="sub">Live Highlight &amp; AutoCut — 처음 받으신 분을 위한 안내</p>
+
+<div class="lead">
+  <p><strong>어려운 건 없습니다.</strong> 까만 명령어 창에 뭘 입력하실 일은 없어요.</p>
+  <p>처음 준비하는 데 10분쯤 걸리고, 그 뒤로는 <strong>파일 하나 더블클릭</strong>이면 끝입니다.</p>
+</div>
+
+<h2>이 두 프로그램은 뭘 해주나요?</h2>
+
+<p>둘 다 <strong>긴 방송 영상을 편집하는 시간을 줄여주는</strong> 도구입니다.
+최종 편집은 평소처럼 <strong>프리미어 프로</strong>에서 하시고, 이 프로그램들은 그 앞 단계 —
+가장 지루하고 오래 걸리는 부분 — 을 대신 해줍니다.</p>
+
+<div class="card">
+  <h3>🔍 Live Highlight — "어디가 재밌었지?" 를 찾아줍니다</h3>
+  <p>5시간짜리 라이브 방송 녹화를 처음부터 다시 보면서 쓸 만한 장면을 골라내는 작업,
+  그걸 없애주는 프로그램입니다.</p>
+  <p>시청자 <strong>채팅 반응</strong>(갑자기 채팅이 폭주한 곳, ㅋㅋ가 쏟아진 곳, "클립!" "편집해줘" 라고 한 곳,
+  후원이 몰린 곳)과 <strong>방송자 목소리</strong>(웃음소리, 갑자기 커진 리액션)를 같이 보고,
+  <strong>재밌었을 가능성이 높은 순서대로</strong> 구간 목록을 뽑아줍니다.</p>
+  <p>목록에서 미리보기로 확인한 다음, 마음에 드는 것만 골라 프리미어로 넘기거나
+  숏츠용 세로 영상(9:16)으로 바로 뽑을 수 있습니다.</p>
+</div>
+
+<div class="card">
+  <h3>✂️ AutoCut — "조용한 부분" 을 잘라줍니다</h3>
+  <p>영상을 창에 끌어다 놓으면 소리를 분석해서 <strong>아무 말 없는 구간을 잘라낸 편집본</strong>을 만들어 줍니다.
+  목소리가 확 커지는 지점에는 <strong>표시(마커)</strong>도 찍어줍니다.</p>
+  <p>결과물은 프리미어에서 열 수 있는 파일로 나옵니다. 열어보면 <strong>이미 컷편집이 된 상태에서</strong>
+  작업을 시작할 수 있습니다.</p>
+  <p>영상을 새로 만들어내는 게 아니라 "여기부터 여기까지 쓴다" 는 정보만 만드는 방식이라,
+  <strong>100GB가 넘는 파일이나 10시간짜리 영상도</strong> 문제없이 처리합니다. 화질도 그대로입니다.</p>
+</div>
+
+<h3>그래서 순서가 어떻게 되나요?</h3>
+
+<div class="flow">
+  <div class="box"><b>📹 방송 녹화</b>OBS로 저장한 파일</div>
+  <div class="arrow">→</div>
+  <div class="box"><b>🔍 Live Highlight</b>쓸 구간 골라내기</div>
+  <div class="arrow">→</div>
+  <div class="box"><b>✂️ AutoCut</b>군더더기 잘라내기</div>
+  <div class="arrow">→</div>
+  <div class="box"><b>🎬 프리미어</b>마무리 편집</div>
+</div>
+
+<div class="tablewrap">
+<table>
+  <tr><th>이럴 때</th><th>이걸 쓰세요</th></tr>
+  <tr><td>긴 방송에서 하이라이트·숏츠 뽑을 때</td><td><strong>Live Highlight</strong></td></tr>
+  <tr><td>영상의 빈 시간·정적을 걷어내고 싶을 때</td><td><strong>AutoCut</strong></td></tr>
+  <tr><td>둘 다 필요할 때</td><td>Live Highlight로 구간을 고른 뒤, 그 결과를 AutoCut에</td></tr>
+</table>
+</div>
+
+<p style="color:var(--muted)">두 프로그램 모두 <strong>인터넷에 영상을 올리지 않습니다.</strong>
+전부 본인 맥 안에서만 처리됩니다.</p>
+
+<h2>준비하기 (처음 한 번만, 10분)</h2>
+
+<ol class="steps">
+
+<li>
+<h3>GitHub 계정 만들고 초대 받기</h3>
+<p>이 프로그램들은 아무나 볼 수 없게 잠가 두었습니다. 그래서 먼저 <strong>초대를 받으셔야</strong> 합니다.</p>
+<ul>
+  <li><a href="https://github.com">github.com</a> 에서 가입합니다. 이메일과 비밀번호만 있으면 됩니다.</li>
+  <li>가입할 때 정한 <strong>아이디를 공유해 주신 분께 알려주세요.</strong> 그래야 초대를 보낼 수 있습니다.</li>
+  <li>초대 메일이 오면 <strong>Accept invitation</strong>(초대 수락) 버튼을 누릅니다. <strong>프로그램이 두 개니 메일도 두 통</strong> 옵니다. 둘 다 수락해 주세요.</li>
+</ul>
+<p style="color:var(--muted)">메일이 안 보이면 스팸함도 확인해 보세요.</p>
+</li>
+
+<li>
+<h3>GitHub Desktop 설치하기</h3>
+<p>프로그램 파일을 내 컴퓨터로 가져오는 앱입니다. 클릭만으로 됩니다.</p>
+<ul>
+  <li><a href="https://desktop.github.com">desktop.github.com</a> 에서 내려받아 설치합니다.</li>
+  <li>앱을 열고 <strong>1번에서 만든 계정으로 로그인</strong>합니다.</li>
+</ul>
+</li>
+
+<li>
+<h3>두 프로그램 받아오기</h3>
+<p>앱 위쪽 메뉴에서 <strong>File</strong>(파일) → <strong>Clone repository</strong>(저장소 복제) 를 누릅니다.</p>
+<p>목록에 두 개가 보일 겁니다. <strong>하나씩 두 번</strong> 받아주세요.</p>
+<div class="tablewrap">
+<table>
+  <tr><th>목록에 이렇게 보입니다</th><th>이 프로그램입니다</th></tr>
+  <tr><td><code>livehighlight</code></td><td>🔍 Live Highlight</td></tr>
+  <tr><td><code>autocut</code></td><td>✂️ AutoCut</td></tr>
+</table>
+</div>
+<p>고르고 <strong>Clone</strong> 버튼을 누르면 잠시 뒤 다 들어옵니다.</p>
+<div class="note">
+<p><strong>"어디에 저장할까요?"</strong> 하고 물어봅니다. 기본값 그대로 두셔도 되고,
+나중에 찾기 쉬운 곳으로 바꾸셔도 됩니다. <strong>어디에 저장했는지만 기억해 두세요.</strong></p>
+</div>
+</li>
+
+</ol>
+
+<h2>실행하기</h2>
+
+<p>GitHub Desktop 위쪽에서 실행할 프로그램을 고른 다음,
+<strong>Repository</strong>(저장소) → <strong>Show in Finder</strong>(파인더에서 보기) 를 누르면 폴더가 열립니다.</p>
+
+<p>폴더 안에 <strong><code>업데이트.command</code></strong> 라는 파일이 있습니다.
+<strong>이게 실행 버튼</strong>이라고 생각하시면 됩니다. 두 폴더 모두 똑같이 들어 있습니다.</p>
+
+<div class="note">
+<p><strong>⚠️ 잠깐 — 처음에는 그냥 더블클릭하면 안 열립니다</strong></p>
+<p>맥이 "확인되지 않은 개발자가 만든 파일" 이라며 막습니다.
+바이러스라서가 아니라, <strong>애플에 돈을 내고 등록한 프로그램이 아니라서</strong> 그렇습니다.</p>
+<p><strong>처음 한 번만</strong> 이렇게 열어주세요:</p>
+<p style="font-size:1.05rem"><strong>파일을 마우스 오른쪽 버튼으로 클릭 → <code>열기</code> → (경고창이 뜨면 다시) <code>열기</code></strong></p>
+<p>한 번 이렇게 열고 나면, 그다음부터는 그냥 더블클릭해도 잘 열립니다.
+<strong>프로그램이 두 개니 각각 한 번씩</strong> 해주셔야 합니다.</p>
+</div>
+
+<p>까만 창이 뜨면서 글자가 주르륵 올라갑니다. <strong>정상입니다.</strong></p>
+
+<div class="note">
+<p><strong>⏳ 처음 한 번은 3~5분 걸립니다</strong></p>
+<p>프로그램이 돌아가는 데 필요한 것들을 인터넷에서 받아오는 중입니다.
+<strong>화면이 멈춘 것처럼 보여도 고장 난 게 아닙니다.</strong> 커피 한 잔 하고 오세요.</p>
+<p>두 번째부터는 몇 초 만에 바로 뜹니다.</p>
+</div>
+
+<h3>준비가 끝나면</h3>
+
+<div class="tablewrap">
+<table>
+  <tr><th>프로그램</th><th>이렇게 열립니다</th></tr>
+  <tr>
+    <td>🔍 <strong>Live Highlight</strong></td>
+    <td><strong>브라우저(크롬·사파리) 창이 저절로 열리면서</strong> 작업 화면이 나타납니다.
+    웹사이트처럼 생긴 화면에서 작업하시면 됩니다.</td>
+  </tr>
+  <tr>
+    <td>✂️ <strong>AutoCut</strong></td>
+    <td><strong>프로그램 창이 뜹니다.</strong> 여기에 영상 파일을 끌어다 놓으세요.</td>
+  </tr>
+</table>
+</div>
+
+<div class="note">
+<p><strong>Live Highlight 를 쓰실 때 — 까만 창을 닫지 마세요</strong></p>
+<p>브라우저 화면은 까만 창이 살아 있는 동안에만 작동합니다.
+까만 창을 닫으면 <strong>브라우저 화면도 더 이상 동작하지 않습니다.</strong></p>
+<p>다 쓰고 <strong>끝내실 때</strong> 까만 창을 닫으시면 됩니다.</p>
+<p>브라우저가 저절로 안 열리면 주소창에 <code>http://127.0.0.1:8777</code> 을 직접 입력하세요.
+인터넷 주소처럼 보이지만 <strong>내 컴퓨터 안에서만 도는 화면</strong>입니다.</p>
+</div>
+
+<h2>다음부터는 이것만 하시면 됩니다</h2>
+
+<div class="big">
+그냥 <code>업데이트.command</code> 를 더블클릭하세요.
+</div>
+
+<p>프로그램을 고쳤다는 연락을 받으셨을 때도, 평소에 그냥 쓰실 때도 <strong>똑같이 이 파일</strong>입니다.
+최신 버전을 알아서 받아오고 바로 실행까지 됩니다.
+다시 설치하거나 뭘 지우실 필요 없습니다.</p>
+
+<p style="color:var(--muted)">인터넷이 안 되는 곳이어도 괜찮습니다.
+최신 버전을 못 받으면 지금 갖고 계신 버전으로 그냥 실행됩니다.</p>
+
+<h2>뭔가 이상할 때</h2>
+
+<div class="tablewrap">
+<table>
+  <tr><th>이런 일이 생기면</th><th>이렇게 해보세요</th></tr>
+  <tr><td>"확인되지 않은 개발자" 라고 뜬다</td><td>파일을 <strong>오른쪽 클릭 → 열기 → 열기</strong></td></tr>
+  <tr><td>까만 창이 뜨자마자 사라진다</td><td>오른쪽 클릭 → 열기 로 다시 해보세요</td></tr>
+  <tr><td>한참 아무 반응이 없다</td><td>처음 실행이라면 정상입니다. 5분은 기다려 주세요</td></tr>
+  <tr><td>브라우저가 저절로 안 열린다<br><span style="color:var(--muted)">(Live Highlight)</span></td><td>주소창에 <code>http://127.0.0.1:8777</code> 직접 입력</td></tr>
+  <tr><td>브라우저 화면이 갑자기 안 된다<br><span style="color:var(--muted)">(Live Highlight)</span></td><td>까만 창이 닫히지 않았는지 확인해 주세요</td></tr>
+  <tr><td>"업데이트를 받지 못했습니다"</td><td>그냥 쓰셔도 됩니다. 인터넷 연결을 확인해 보세요</td></tr>
+  <tr><td>그 밖에 빨간 글씨가 뜬다</td><td>아래를 봐주세요 👇</td></tr>
+</table>
+</div>
+
+<h3>막히면 이렇게 알려주세요</h3>
+
+<div class="card">
+<p><strong>까만 창에 나온 글자를 사진으로 찍거나, 드래그해서 복사해 보내주세요.</strong></p>
+<p>무슨 뜻인지 몰라도 괜찮습니다. 그대로 보내주시면 됩니다. 그게 가장 빠릅니다.</p>
+</div>
+
+<footer>
+<p>각 프로그램의 자세한 사용법은 받으신 폴더 안 <code>사용법.md</code> 에 정리되어 있습니다.</p>
+</footer>
+
+</div>
+</body>
+</html>

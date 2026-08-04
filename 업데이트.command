@@ -1,7 +1,7 @@
 #!/bin/bash
-# livehl 업데이트 + 실행 런처 (macOS) — Finder에서 이 파일을 더블클릭하면 됩니다.
+# Live Highlight 업데이트 + 실행 런처 (macOS) — Finder에서 이 파일을 더블클릭하면 됩니다.
 #
-# 최신 버전을 내려받은 뒤 livehl 을 실행합니다.
+# 최신 버전을 내려받은 뒤 Live Highlight 를 실행합니다.
 # 인터넷이 안 되거나 업데이트가 실패해도, 지금 갖고 있는 버전으로 그냥 실행합니다.
 
 cd "$(dirname "$0")"
