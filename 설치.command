@@ -53,8 +53,16 @@ fail() {
 
   mkdir -p "$target" || fail "설치 폴더를 만들지 못했습니다: $target"
 
-  # 프로그램 파일만 덮어쓴다. .venv 와 data 는 tar 안에 없으므로 그대로 남는다.
-  if ! cp -R "$src/." "$target/"; then
+  # 저장소에는 개발용 파일(README·tests·docs 등)도 들어 있다.
+  # 받는 분 폴더가 어지럽지 않게 배포목록.txt 에 적힌 것만 가져온다.
+  # 목록 파일이 없는 옛 버전이면 전체를 복사한다.
+  if [ -f "$src/배포목록.txt" ]; then
+    while IFS= read -r item; do
+      case "$item" in ""|\#*) continue;; esac
+      [ -e "$src/$item" ] || continue
+      cp -R "$src/$item" "$target/" || fail "$label 파일을 복사하지 못했습니다."
+    done < "$src/배포목록.txt"
+  elif ! cp -R "$src/." "$target/"; then
     fail "$label 파일을 복사하지 못했습니다."
   fi
 

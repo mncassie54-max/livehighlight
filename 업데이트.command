@@ -65,7 +65,17 @@ fi
 cat > "$tmp/apply.sh" <<'HELPER'
 #!/bin/bash
 src="$1"; dst="$2"; launch="$3"; tmp="$4"; shift 4
-cp -R "$src/." "$dst/" 2>/dev/null
+# 받는 분 폴더에는 배포목록.txt 에 적힌 것만 둔다(개발용 파일 제외).
+# 목록이 없는 옛 버전이면 전체를 복사한다.
+if [ -f "$src/배포목록.txt" ]; then
+  while IFS= read -r item; do
+    case "$item" in ""|\#*) continue;; esac
+    [ -e "$src/$item" ] || continue
+    cp -R "$src/$item" "$dst/" 2>/dev/null
+  done < "$src/배포목록.txt"
+else
+  cp -R "$src/." "$dst/" 2>/dev/null
+fi
 chmod +x "$dst"/*.command 2>/dev/null
 xattr -dr com.apple.quarantine "$dst" 2>/dev/null
 cd "$dst" || exit 1

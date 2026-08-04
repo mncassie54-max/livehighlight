@@ -1,0 +1,10 @@
+# 받는 분 폴더에 넣을 것만 적는다. 개발용 파일(README, package.sh …)은 넣지 않는다.
+# 설치.command 와 업데이트.command 가 이 목록만 복사한다.
+# 이 파일이 없는 옛 버전에서는 전체를 복사한다(그때 동작이 유지되도록).
+livehl
+web
+requirements.txt
+icons
+실행.command
+업데이트.command
+시작하기.html
