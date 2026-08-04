@@ -131,6 +131,8 @@ function renderProject() {
   fillSelect($('#sel-mic'), opts, p.mic_stream);
   fillSelect($('#sel-mix'), opts, p.mix_stream);
   $('#p-url').value = p.youtube_url || '';
+  $('#p-chzzk').value = p.chzzk_url || '';
+  $('#p-chzzk-offset').value = p.chzzk_offset_sec || 0;
 
   // 통계
   const st = $('#stats-box'); st.innerHTML = '';
@@ -503,7 +505,8 @@ function bind() {
     if (!video_path) return toast('영상 파일을 선택하세요', true);
     try {
       const { project } = await post('/api/projects', {
-        video_path, youtube_url: $('#new-url').value.trim(), name: $('#new-name').value.trim(),
+        video_path, youtube_url: $('#new-url').value.trim(),
+        chzzk_url: $('#new-chzzk').value.trim(), name: $('#new-name').value.trim(),
       });
       await openProject(project.id);
     } catch (e) { toast('생성 실패: ' + e.message, true); }
@@ -523,6 +526,8 @@ function bind() {
         mic_stream: parseInt($('#sel-mic').value, 10),
         mix_stream: parseInt($('#sel-mix').value, 10),
         youtube_url: $('#p-url').value.trim(),
+        chzzk_url: $('#p-chzzk').value.trim(),
+        chzzk_offset_sec: Number($('#p-chzzk-offset').value) || 0,
         do_chat: $('#chk-chat').checked,
         do_audio: $('#chk-audio').checked,
         auto_align: $('#chk-align').checked,

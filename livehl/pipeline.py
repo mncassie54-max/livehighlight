@@ -6,7 +6,7 @@ from typing import Any, Callable, Dict, List, Optional
 
 import numpy as np
 
-from . import align, audio, chat, config, export_clips, ffmpeg_tools, score, store
+from . import align, audio, chat, chzzk, config, export_clips, ffmpeg_tools, score, store
 from . import export_xml as xmlout
 
 Progress = Callable[[float, str], None]
@@ -87,25 +87,54 @@ def analyze(
     n_local = int(duration) + 1
     sig = load_signals(pid)
 
-    # ---- 채팅
-    if do_chat and proj.get("youtube_url"):
-        progress(0.05, "유튜브 채팅 리플레이 받는 중…")
-        meta = chat.fetch(
-            proj["youtube_url"],
-            store.project_dir(pid),
-            lambda f, m: progress(0.05 + 0.15 * f, m),
-        )
-        proj["chat_meta"] = meta
-        proj["stream_start_utc"] = meta.get("release_timestamp") or meta.get("timestamp")
-        events = chat.parse(meta.get("chat_file"), lambda f, m: progress(0.2 + 0.1 * f, m))
+    # ---- 채팅 (유튜브 + 치지직. 동시송출이면 둘 다 받아 합친다)
+    if do_chat and (proj.get("youtube_url") or proj.get("chzzk_url")):
+        yt_events: list = []
+        cz_events: list = []
+        vod_hint = 0.0
+
+        if proj.get("youtube_url"):
+            progress(0.05, "유튜브 채팅 리플레이 받는 중…")
+            meta = chat.fetch(
+                proj["youtube_url"],
+                store.project_dir(pid),
+                lambda f, m: progress(0.05 + 0.10 * f, m),
+            )
+            proj["chat_meta"] = meta
+            proj["stream_start_utc"] = meta.get("release_timestamp") or meta.get("timestamp")
+            yt_events = chat.parse(meta.get("chat_file"), lambda f, m: progress(0.15 + 0.05 * f, m))
+            for e in yt_events:
+                e.setdefault("source", "youtube")
+            vod_hint = max(vod_hint, float(meta.get("duration") or 0))
+
+        if proj.get("chzzk_url"):
+            progress(0.20, "치지직 채팅 받는 중…")
+            cz_meta = chzzk.fetch(
+                proj["chzzk_url"],
+                store.project_dir(pid),
+                lambda f, m: progress(0.20 + 0.08 * f, m),
+            )
+            proj["chzzk_meta"] = cz_meta
+            cz_events = chzzk.parse(cz_meta.get("chat_file"))
+            # 두 플랫폼의 다시보기 시작점이 다르면 이 값으로 민다 (기본 0)
+            shift = float(proj.get("chzzk_offset_sec") or 0.0)
+            if shift:
+                for e in cz_events:
+                    e["t"] += shift
+            vod_hint = max(vod_hint, float(cz_meta.get("duration") or 0))
+            if cz_meta.get("error"):
+                store.log(proj, "치지직: %s" % cz_meta["error"])
+
+        events = chat.merge(yt_events, cz_events)
         with open(events_path(pid), "w", encoding="utf-8") as f:
             json.dump(events, f, ensure_ascii=False)
-        vod_len = int(max(meta.get("duration") or 0, events[-1]["t"] if events else 0)) + 1
+        vod_len = int(max(vod_hint, events[-1]["t"] if events else 0)) + 1
         cur = chat.curves(events, vod_len)
         sig.update(cur)
         proj["chat_stats"] = chat.stats(events)
         proj["vod_length"] = vod_len
-        store.log(proj, "채팅 %d개 수집" % len(events))
+        store.log(proj, "채팅 %d개 수집 (유튜브 %d · 치지직 %d)"
+                  % (len(events), len(yt_events), len(cz_events)))
         store.save(proj)
 
     # ---- 오디오

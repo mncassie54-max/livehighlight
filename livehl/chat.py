@@ -213,6 +213,21 @@ def curves(events: List[Dict[str, Any]], length_sec: int) -> Dict[str, np.ndarra
     return out
 
 
+def merge(*event_lists: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """여러 플랫폼의 채팅을 하나로 합친다 (시간순).
+
+    동시송출을 하면 유튜브 채팅만으로는 반응의 절반만 보게 되므로,
+    치지직 등 다른 곳의 채팅도 같이 넣어 하나의 신호로 만든다.
+    각 이벤트의 `source` 는 그대로 유지되어 통계에서 어디서 왔는지 셀 수 있다.
+    """
+    out: List[Dict[str, Any]] = []
+    for lst in event_lists:
+        if lst:
+            out.extend(lst)
+    out.sort(key=lambda e: e.get("t", 0.0))
+    return out
+
+
 def stats(events: List[Dict[str, Any]]) -> Dict[str, Any]:
     if not events:
         return {"count": 0}
@@ -220,8 +235,13 @@ def stats(events: List[Dict[str, Any]]) -> Dict[str, Any]:
     clip = sum(1 for e in events if CLIP_RE.search(e["text"] or ""))
     paid = sum(1 for e in events if e["kind"] in ("paid", "member"))
     span = events[-1]["t"] - events[0]["t"]
+    by_source: Dict[str, int] = {}
+    for e in events:
+        s = e.get("source") or "youtube"
+        by_source[s] = by_source.get(s, 0) + 1
     return {
         "count": len(events),
+        "by_source": by_source,
         "laugh": laugh,
         "clip_requests": clip,
         "paid": paid,

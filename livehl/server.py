@@ -108,7 +108,8 @@ def _create(r: Req):
     if not video or not os.path.isfile(video):
         raise ApiError("영상 파일을 찾을 수 없습니다: %s" % video)
     name = (b.get("name") or os.path.splitext(os.path.basename(video))[0]).strip()
-    proj = store.new_project(name, video, (b.get("youtube_url") or "").strip())
+    proj = store.new_project(name, video, (b.get("youtube_url") or "").strip(),
+                             (b.get("chzzk_url") or "").strip())
     try:
         pipeline.probe_project(proj)
         proj = store.load(proj["id"])
@@ -139,12 +140,14 @@ def _settings(r: Req):
     pid = r.m.group(1)
     proj = store.load(pid)
     b = r.body
-    for key in ("name", "youtube_url"):
+    for key in ("name", "youtube_url", "chzzk_url"):
         if b.get(key) is not None:
             proj[key] = b[key]
     for key in ("mic_stream", "mix_stream"):
         if b.get(key) is not None:
             proj[key] = int(b[key])
+    if b.get("chzzk_offset_sec") is not None:
+        proj["chzzk_offset_sec"] = float(b["chzzk_offset_sec"])
     if b.get("offset_sec") is not None:
         proj["offset_sec"] = float(b["offset_sec"])
         proj["offset_source"] = "수동 지정"
@@ -166,8 +169,11 @@ def _analyze(r: Req):
         proj["mix_stream"] = int(b["mix_stream"])
     if b.get("youtube_url") is not None:
         proj["youtube_url"] = b["youtube_url"].strip()
+    if b.get("chzzk_url") is not None:
+        proj["chzzk_url"] = b["chzzk_url"].strip()
     store.save(proj)
-    do_chat = bool(b.get("do_chat", True)) and bool(proj.get("youtube_url"))
+    do_chat = bool(b.get("do_chat", True)) and bool(
+        proj.get("youtube_url") or proj.get("chzzk_url"))
     do_audio = bool(b.get("do_audio", True))
     job = jobs.spawn(
         "분석",

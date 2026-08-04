@@ -29,7 +29,8 @@ def path_in(pid: str, *parts: str) -> str:
     return p
 
 
-def new_project(name: str, video_path: str, youtube_url: str = "") -> Dict[str, Any]:
+def new_project(name: str, video_path: str, youtube_url: str = "",
+                chzzk_url: str = "") -> Dict[str, Any]:
     base = _slug(name)
     pid = base
     n = 2
@@ -41,6 +42,8 @@ def new_project(name: str, video_path: str, youtube_url: str = "") -> Dict[str, 
         "name": name,
         "video_path": video_path,
         "youtube_url": youtube_url,
+        "chzzk_url": chzzk_url,      # 동시송출 시 치지직 다시보기 주소
+        "chzzk_offset_sec": 0.0,     # 두 플랫폼 다시보기 시작점 차이 보정
         "created": time.time(),
         "media": None,            # probe 결과
         "mic_stream": None,       # 마이크 오디오 스트림 index (절대 index)

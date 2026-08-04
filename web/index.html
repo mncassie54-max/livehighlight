@@ -46,6 +46,10 @@
           <input id="new-url" type="text" spellcheck="false" placeholder="https://www.youtube.com/watch?v=...">
         </div>
         <div class="row">
+          <label>치지직 다시보기 URL <small>(동시송출했다면 같이 넣으세요 · 선택)</small></label>
+          <input id="new-chzzk" type="text" spellcheck="false" placeholder="https://chzzk.naver.com/video/...">
+        </div>
+        <div class="row">
           <label>프로젝트 이름</label>
           <input id="new-name" type="text" placeholder="비우면 파일명 사용">
         </div>
@@ -77,6 +81,14 @@
         <div class="row">
           <label>유튜브 다시보기 URL</label>
           <input id="p-url" type="text" spellcheck="false" placeholder="채팅 분석을 쓰려면 입력">
+        </div>
+        <div class="row">
+          <label>치지직 다시보기 URL <small>(동시송출 시)</small></label>
+          <input id="p-chzzk" type="text" spellcheck="false" placeholder="https://chzzk.naver.com/video/...">
+        </div>
+        <div class="row">
+          <label>치지직 시간 보정 (초) <small>(치지직 채팅만 앞뒤로 밀 때)</small></label>
+          <input id="p-chzzk-offset" type="number" step="1" value="0">
         </div>
         <label class="check"><input type="checkbox" id="chk-chat" checked> 채팅 리플레이 받아서 분석</label>
         <label class="check"><input type="checkbox" id="chk-audio" checked> 마이크 오디오 분석</label>
