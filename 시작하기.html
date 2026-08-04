@@ -6,18 +6,10 @@
 <title>시작하기 — Live Highlight &amp; AutoCut</title>
 <style>
   :root {
-    --paper: #f5f7f8;
-    --paper-2: #ffffff;
-    --sunk: #e7ecee;
-    --ink: #131820;
-    --ink-2: #4d5866;
-    --ink-3: #7a8694;
-    --rule: #d5dcdf;
-    --keep: #2a7f7a;
-    --cut: #a8453a;
-    --marker: #c98a1e;
-    --keep-soft: #d6e8e6;
-    --marker-soft: #f7ecd4;
+    --paper: #f5f7f8; --paper-2: #ffffff; --sunk: #e7ecee;
+    --ink: #131820; --ink-2: #4d5866; --ink-3: #7a8694; --rule: #d5dcdf;
+    --keep: #2a7f7a; --cut: #a8453a; --marker: #c98a1e;
+    --keep-soft: #d6e8e6; --marker-soft: #f7ecd4; --cut-soft: #f0dcd8;
 
     --font-sans: "Pretendard", "Malgun Gothic", "Apple SD Gothic Neo",
                  "Noto Sans KR", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -33,24 +25,23 @@
       --paper: #0e1319; --paper-2: #161d25; --sunk: #1b232c;
       --ink: #e6ecf1; --ink-2: #a3b0bd; --ink-3: #75828f; --rule: #27313b;
       --keep: #4fb3a8; --cut: #d0705f; --marker: #e8b33f;
-      --keep-soft: #1e3a3a; --marker-soft: #332a17;
+      --keep-soft: #1e3a3a; --marker-soft: #332a17; --cut-soft: #3a2420;
     }
   }
   :root[data-theme="dark"] {
     --paper: #0e1319; --paper-2: #161d25; --sunk: #1b232c;
     --ink: #e6ecf1; --ink-2: #a3b0bd; --ink-3: #75828f; --rule: #27313b;
     --keep: #4fb3a8; --cut: #d0705f; --marker: #e8b33f;
-    --keep-soft: #1e3a3a; --marker-soft: #332a17;
+    --keep-soft: #1e3a3a; --marker-soft: #332a17; --cut-soft: #3a2420;
   }
   :root[data-theme="light"] {
     --paper: #f5f7f8; --paper-2: #ffffff; --sunk: #e7ecee;
     --ink: #131820; --ink-2: #4d5866; --ink-3: #7a8694; --rule: #d5dcdf;
     --keep: #2a7f7a; --cut: #a8453a; --marker: #c98a1e;
-    --keep-soft: #d6e8e6; --marker-soft: #f7ecd4;
+    --keep-soft: #d6e8e6; --marker-soft: #f7ecd4; --cut-soft: #f0dcd8;
   }
 
   * { box-sizing: border-box; }
-
   body {
     margin: 0; background: var(--paper); color: var(--ink);
     font-family: var(--font-sans); font-size: 1rem; line-height: 1.75;
@@ -59,37 +50,26 @@
   html { scroll-behavior: smooth; }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
-  /* ---------- 머리말 ---------- */
-
   .masthead {
     max-width: 76rem; margin: 0 auto;
     padding: clamp(2.5rem, 6vw, 4.5rem) var(--step) clamp(1.75rem, 4vw, 2.75rem);
   }
   .eyebrow {
     margin: 0 0 0.9rem; font-family: var(--font-mono);
-    font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
-    color: var(--ink-3);
+    font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3);
   }
   .masthead h1 {
     margin: 0 0 1rem; font-size: clamp(1.75rem, 1.1rem + 2.6vw, 2.75rem);
     line-height: 1.25; letter-spacing: -0.02em; font-weight: 800;
   }
-  .lede {
-    margin: 0; max-width: var(--measure);
-    font-size: clamp(1rem, 0.95rem + 0.3vw, 1.12rem); color: var(--ink-2);
-  }
+  .lede { margin: 0; max-width: var(--measure); font-size: clamp(1rem, 0.95rem + 0.3vw, 1.12rem); color: var(--ink-2); }
   .lede strong { color: var(--ink); font-weight: 700; }
 
-  /* ---------- 레이아웃 ---------- */
-
   .layout {
-    max-width: 76rem; margin: 0 auto;
-    padding: 0 var(--step) 5rem;
+    max-width: 76rem; margin: 0 auto; padding: 0 var(--step) 5rem;
     display: grid; grid-template-columns: var(--nav-w) minmax(0, 1fr);
     gap: clamp(1.5rem, 4vw, 3.5rem); align-items: start;
   }
-
-  /* ---------- 목차 메뉴 ---------- */
 
   .toc { position: sticky; top: 0; max-height: 100vh; overflow-y: auto; padding: 1.75rem 0; }
   .toc summary {
@@ -113,8 +93,6 @@
   .toc a:hover { color: var(--ink); border-left-color: var(--ink-3); }
   .toc a.is-active { color: var(--keep); font-weight: 700; border-left-color: var(--keep); }
 
-  /* ---------- 본문 ---------- */
-
   main { display: flex; flex-direction: column; gap: clamp(2.5rem, 5vw, 3.75rem); padding-top: 1.75rem; }
   section { display: flex; flex-direction: column; gap: 1.1rem; scroll-margin-top: 1.5rem; }
 
@@ -129,16 +107,17 @@
   section h3 { margin: 0.6rem 0 0; font-size: 1.05rem; font-weight: 700; }
   .prose { margin: 0; max-width: var(--measure); color: var(--ink-2); }
   .prose strong { color: var(--ink); font-weight: 700; }
-  .prose + .prose { margin-top: -0.2rem; }
 
   code {
     font-family: var(--font-mono); font-size: 0.88em;
-    background: var(--sunk); border-radius: 4px; padding: 0.1em 0.4em;
-    color: var(--ink);
+    background: var(--sunk); border-radius: 4px; padding: 0.1em 0.4em; color: var(--ink);
   }
   a { color: var(--keep); text-underline-offset: 2px; }
-
-  /* ---------- 카드 ---------- */
+  .btn {
+    font-family: var(--font-sans); font-weight: 700; font-size: 0.9em;
+    background: var(--keep-soft); color: var(--keep);
+    border-radius: 6px; padding: 0.12em 0.5em; white-space: nowrap;
+  }
 
   .card {
     background: var(--paper-2); border: 1px solid var(--rule);
@@ -154,8 +133,6 @@
     padding: 0.2rem 0.55rem; border-radius: 999px;
   }
 
-  /* ---------- 단계 ---------- */
-
   .steps { display: flex; flex-direction: column; gap: 1.35rem; }
   .step { display: grid; grid-template-columns: 2.6rem minmax(0, 1fr); gap: 0.9rem; align-items: start; }
   .step-num {
@@ -167,8 +144,6 @@
   .step-body h3 { margin: 0; font-size: 1.02rem; }
   .step-body .prose { max-width: none; }
   .step-note { margin: 0; font-size: 0.9rem; color: var(--ink-3); }
-
-  /* ---------- 강조 박스 ---------- */
 
   .callout {
     background: var(--paper-2); border: 1px solid var(--rule);
@@ -184,6 +159,8 @@
   .callout.is-warn .callout-label { color: var(--marker); }
   .callout.is-key { border-left-color: var(--keep); background: var(--keep-soft); }
   .callout.is-key .callout-label { color: var(--keep); }
+  .callout.is-stop { border-left-color: var(--cut); background: var(--cut-soft); }
+  .callout.is-stop .callout-label { color: var(--cut); }
 
   .action {
     background: var(--keep); color: var(--paper-2);
@@ -192,8 +169,6 @@
   }
   .action code { background: rgba(255,255,255,.2); color: inherit; }
 
-  /* ---------- 표 ---------- */
-
   .tablewrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 12px; background: var(--paper-2); }
   table { border-collapse: collapse; width: 100%; min-width: 30rem; font-size: 0.94rem; }
   th, td { text-align: left; padding: 0.75rem 1rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
@@ -201,8 +176,6 @@
   th { font-weight: 700; background: var(--sunk); white-space: nowrap; }
   td strong { color: var(--ink); }
   .muted { color: var(--ink-3); font-size: 0.88em; }
-
-  /* ---------- 흐름도 ---------- */
 
   .flow { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: stretch; }
   .flow .box {
@@ -213,12 +186,19 @@
   .flow .box b { display: block; color: var(--ink); font-size: 0.95rem; margin-bottom: 0.15rem; }
   .flow .arrow { display: grid; place-items: center; color: var(--ink-3); font-size: 1.1rem; }
 
+  .screen {
+    background: var(--sunk); border: 1px solid var(--rule); border-radius: 10px;
+    padding: 0.9rem 1.1rem; font-family: var(--font-mono);
+    font-size: 0.82rem; line-height: 1.7; color: var(--ink-2);
+    overflow-x: auto; white-space: pre;
+  }
+  .screen b { color: var(--ink); font-weight: 700; }
+  .screen .c { color: var(--keep); }
+
   footer {
     max-width: 76rem; margin: 0 auto; padding: 2rem var(--step) 4rem;
     border-top: 1px solid var(--rule); color: var(--ink-3); font-size: 0.92rem;
   }
-
-  /* ---------- 좁은 화면 ---------- */
 
   @media (max-width: 56rem) {
     .layout { grid-template-columns: minmax(0, 1fr); gap: 0; }
@@ -250,7 +230,7 @@
   <h1>처음 받으셨다면, 이 문서만 따라오시면 됩니다</h1>
   <p class="lede">
     <strong>어려운 건 없습니다.</strong> 까만 명령어 창에 뭘 입력하실 일은 없어요.
-    처음 준비하는 데 10분쯤 걸리고, 그 뒤로는 <strong>파일 하나 더블클릭</strong>이면 끝입니다.
+    설치는 <strong>파일 하나 더블클릭</strong>이면 끝나고, 이 문서에 두 프로그램 쓰는 법까지 다 있습니다.
   </p>
 </header>
 
@@ -267,22 +247,30 @@
         <a href="#which">언제 뭘 쓰나</a>
       </div>
       <div class="toc-group">
-        <p>2 · 처음 준비하기</p>
-        <a href="#account">계정 만들고 초대받기</a>
-        <a href="#desktop">GitHub Desktop 설치</a>
-        <a href="#clone">두 프로그램 받아오기</a>
+        <p>2 · 설치하기</p>
+        <a href="#install">파일 하나로 설치</a>
+        <a href="#run">실행하는 법</a>
       </div>
       <div class="toc-group">
-        <p>3 · 실행하기</p>
-        <a href="#firstrun">처음 열 때</a>
-        <a href="#screens">어떤 화면이 열리나</a>
+        <p>3 · Live Highlight 쓰는 법</p>
+        <a href="#lh-obs">방송 전 OBS 설정</a>
+        <a href="#lh-new">분석 걸기</a>
+        <a href="#lh-sync">시간 맞추기 ⚠️</a>
+        <a href="#lh-pick">쓸 구간 고르기</a>
+        <a href="#lh-export">내보내기</a>
       </div>
       <div class="toc-group">
-        <p>4 · 평소 쓰기</p>
-        <a href="#daily">매번 이것만 하면 됩니다</a>
+        <p>4 · AutoCut 쓰는 법</p>
+        <a href="#ac-drop">영상 넣기</a>
+        <a href="#ac-premiere">프리미어에서 열기</a>
+        <a href="#ac-tune">결과 조절하기</a>
       </div>
       <div class="toc-group">
-        <p>5 · 막혔을 때</p>
+        <p>5 · 평소 쓰기</p>
+        <a href="#daily">매번 이것만</a>
+      </div>
+      <div class="toc-group">
+        <p>6 · 막혔을 때</p>
         <a href="#trouble">문제 해결</a>
         <a href="#help">도움 요청하는 법</a>
       </div>
@@ -326,7 +314,7 @@
         <span class="card-tag">무엇을 보고 찾나</span>
         <div class="tablewrap">
           <table>
-            <tr><th>💬 시청자 채팅</th><td>갑자기 채팅이 폭주한 곳, <code>ㅋㅋ</code> 가 쏟아진 곳,
+            <tr><th>💬 시청자 채팅</th><td>갑자기 채팅이 폭주한 곳, <code>ㅋㅋㅋ</code> 나 "웃기네" 가 쏟아진 곳,
               "클립!" "편집해줘" 라고 <strong>직접 지목한 곳</strong>, 후원이 몰린 곳</td></tr>
             <tr><th>🎙 방송자 목소리</th><td>웃음소리, 갑자기 커진 리액션</td></tr>
           </table>
@@ -334,7 +322,7 @@
       </div>
       <p class="prose">
         이 신호들을 같이 보고 <strong>재밌었을 가능성이 높은 순서대로</strong> 구간 목록을 뽑아줍니다.
-        목록에서 미리보기로 확인한 다음, 마음에 드는 것만 골라 프리미어로 넘기거나
+        미리보기로 확인한 다음, 마음에 드는 것만 골라 프리미어로 넘기거나
         <strong>숏츠용 세로 영상(9:16)</strong>으로 바로 뽑을 수 있습니다.
       </p>
     </section>
@@ -345,10 +333,6 @@
       <p class="prose">
         영상을 창에 끌어다 놓으면 소리를 분석해서 <strong>아무 말 없는 구간을 잘라낸 편집본</strong>을
         만들어 줍니다. 목소리가 확 커지는 지점에는 <strong>표시(마커)</strong>도 찍어줍니다.
-      </p>
-      <p class="prose">
-        결과물은 프리미어에서 열 수 있는 파일로 나옵니다. 열어보면
-        <strong>이미 컷편집이 된 상태에서</strong> 작업을 시작할 수 있습니다.
       </p>
       <div class="callout is-key">
         <span class="callout-label">큰 파일도 괜찮습니다</span>
@@ -373,136 +357,63 @@
       </div>
     </section>
 
-    <!-- ══════════════ 2 · 처음 준비하기 ══════════════ -->
+    <!-- ══════════════ 2 · 설치하기 ══════════════ -->
 
-    <section id="account">
-      <p class="sec-kicker">2 · 처음 준비하기</p>
-      <h2>계정 만들고 초대받기</h2>
+    <section id="install">
+      <p class="sec-kicker">2 · 설치하기</p>
+      <h2>파일 하나로 설치</h2>
       <p class="prose">
-        이 프로그램들은 아무나 볼 수 없게 잠가 두었습니다. 그래서 먼저 <strong>초대를 받으셔야</strong> 합니다.
-      </p>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">01</div>
-          <div class="step-body">
-            <h3>가입하기</h3>
-            <p class="prose"><a href="https://github.com">github.com</a> 에서 가입합니다.
-              이메일과 비밀번호만 있으면 됩니다.</p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">02</div>
-          <div class="step-body">
-            <h3>아이디 알려주기</h3>
-            <p class="prose">가입할 때 정한 <strong>아이디를 공유해 주신 분께 알려주세요.</strong>
-              그래야 초대를 보낼 수 있습니다.</p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">03</div>
-          <div class="step-body">
-            <h3>초대 수락하기</h3>
-            <p class="prose">초대 메일이 오면 <strong>Accept invitation</strong>(초대 수락) 버튼을 누릅니다.</p>
-            <p class="step-note">프로그램이 두 개라 <strong>메일도 두 통</strong> 옵니다. 둘 다 수락해 주세요.
-              안 보이면 스팸함도 확인해 보세요.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="desktop">
-      <p class="sec-kicker">2 · 처음 준비하기</p>
-      <h2>GitHub Desktop 설치</h2>
-      <p class="prose">
-        프로그램 파일을 내 컴퓨터로 가져오는 앱입니다. 클릭만으로 됩니다.
-      </p>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">01</div>
-          <div class="step-body">
-            <h3>내려받아 설치</h3>
-            <p class="prose"><a href="https://desktop.github.com">desktop.github.com</a> 에서 받으시면 됩니다.</p>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">02</div>
-          <div class="step-body">
-            <h3>로그인</h3>
-            <p class="prose">앱을 열고 <strong>앞에서 만든 계정으로 로그인</strong>합니다.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="clone">
-      <p class="sec-kicker">2 · 처음 준비하기</p>
-      <h2>두 프로그램 받아오기</h2>
-      <p class="prose">
-        앱 위쪽 메뉴에서 <strong>File</strong>(파일) → <strong>Clone repository</strong>(저장소 복제) 를 누릅니다.
-        목록에 두 개가 보일 겁니다. <strong>하나씩 두 번</strong> 받아주세요.
-      </p>
-      <div class="tablewrap">
-        <table>
-          <tr><th>목록에 이렇게 보입니다</th><th>이 프로그램입니다</th></tr>
-          <tr><td><code>livehighlight</code></td><td>🔍 Live Highlight</td></tr>
-          <tr><td><code>autocut</code></td><td>✂️ AutoCut</td></tr>
-        </table>
-      </div>
-      <p class="prose">고르고 <strong>Clone</strong> 버튼을 누르면 잠시 뒤 다 들어옵니다.</p>
-      <div class="callout">
-        <span class="callout-label">"어디에 저장할까요?" 라고 물어보면</span>
-        <p class="prose">
-          기본값 그대로 두셔도 되고, 나중에 찾기 쉬운 곳으로 바꾸셔도 됩니다.
-          <strong>어디에 저장했는지만 기억해 두세요.</strong>
-        </p>
-      </div>
-    </section>
-
-    <!-- ══════════════ 3 · 실행하기 ══════════════ -->
-
-    <section id="firstrun">
-      <p class="sec-kicker">3 · 실행하기</p>
-      <h2>처음 열 때</h2>
-      <p class="prose">
-        GitHub Desktop 위쪽에서 실행할 프로그램을 고른 다음,
-        <strong>Repository</strong>(저장소) → <strong>Show in Finder</strong>(파인더에서 보기) 를 누르면 폴더가 열립니다.
-      </p>
-      <p class="prose">
-        폴더 안에 <strong><code>업데이트.command</code></strong> 라는 파일이 있습니다.
-        <strong>이게 실행 버튼</strong>이라고 생각하시면 됩니다. 두 폴더 모두 똑같이 들어 있습니다.
+        받으신 <strong><code>설치.command</code></strong> 파일 하나만 있으면 됩니다.
+        계정을 만들거나 다른 앱을 깔 필요 없습니다.
       </p>
 
       <div class="callout is-warn">
-        <span class="callout-label">⚠️ 처음에는 그냥 더블클릭하면 안 열립니다</span>
+        <span class="callout-label">⚠️ 그냥 더블클릭하면 안 열립니다</span>
         <p class="prose">
           맥이 "확인되지 않은 개발자가 만든 파일" 이라며 막습니다.
           바이러스라서가 아니라, <strong>애플에 돈을 내고 등록한 프로그램이 아니라서</strong> 그렇습니다.
         </p>
-        <p class="prose"><strong>처음 한 번만</strong> 이렇게 열어주세요:</p>
         <p class="prose">
-          <strong>파일을 마우스 오른쪽 버튼으로 클릭 → <code>열기</code> → (경고창이 뜨면 다시) <code>열기</code></strong>
+          <strong><code>설치.command</code> 를 마우스 오른쪽 버튼으로 클릭 → <code>열기</code> →
+          (경고창이 뜨면 다시) <code>열기</code></strong>
         </p>
-        <p class="prose">
-          한 번 이렇게 열고 나면 그다음부터는 그냥 더블클릭해도 잘 열립니다.
-          <strong>프로그램이 두 개니 각각 한 번씩</strong> 해주셔야 합니다.
-        </p>
+        <p class="step-note">이 경고는 <strong>이 파일 딱 한 번</strong>만 나옵니다.
+          설치된 프로그램들은 그냥 더블클릭으로 열립니다.</p>
       </div>
 
-      <p class="prose">까만 창이 뜨면서 글자가 주르륵 올라갑니다. <strong>정상입니다.</strong></p>
+      <p class="prose">
+        까만 창이 열리면서 두 프로그램을 내려받습니다. <strong>보통 10~30초</strong>면 끝납니다.
+        끝나면 설치된 폴더가 저절로 열립니다.
+      </p>
+
+      <div class="screen"><b>서류 › 영상편집도구 ›</b>
+   📁 <span class="c">AutoCut</span>          ← ✂️ 조용한 부분 잘라내기
+   📁 <span class="c">LiveHighlight</span>    ← 🔍 재밌는 구간 찾기</div>
+
+      <p class="prose">
+        이 폴더는 <strong>서류(Documents) 폴더 안 "영상편집도구"</strong> 에 만들어집니다.
+        자주 쓰실 거면 이 폴더를 Finder 사이드바에 끌어다 놓으시면 편합니다.
+      </p>
+    </section>
+
+    <section id="run">
+      <p class="sec-kicker">2 · 설치하기</p>
+      <h2>실행하는 법</h2>
+      <p class="prose">
+        쓰고 싶은 프로그램 폴더에 들어가서
+        <strong><code>업데이트.command</code></strong> 를 더블클릭하면 실행됩니다.
+        <strong>이게 실행 버튼</strong>이라고 생각하시면 됩니다.
+      </p>
 
       <div class="callout is-warn">
-        <span class="callout-label">⏳ 처음 한 번은 3~5분 걸립니다</span>
+        <span class="callout-label">⏳ 각 프로그램의 첫 실행은 3~5분 걸립니다</span>
         <p class="prose">
           프로그램이 돌아가는 데 필요한 것들을 인터넷에서 받아오는 중입니다.
           <strong>화면이 멈춘 것처럼 보여도 고장 난 게 아닙니다.</strong> 커피 한 잔 하고 오세요.
           두 번째부터는 몇 초 만에 바로 뜹니다.
         </p>
       </div>
-    </section>
 
-    <section id="screens">
-      <p class="sec-kicker">3 · 실행하기</p>
-      <h2>어떤 화면이 열리나</h2>
       <div class="tablewrap">
         <table>
           <tr><th>프로그램</th><th>이렇게 열립니다</th></tr>
@@ -518,26 +429,339 @@
         </table>
       </div>
 
-      <div class="callout is-warn">
-        <span class="callout-label">Live Highlight — 까만 창을 닫지 마세요</span>
+      <div class="callout is-stop">
+        <span class="callout-label">까만 창을 닫지 마세요</span>
         <p class="prose">
-          브라우저 화면은 까만 창이 살아 있는 동안에만 작동합니다.
-          까만 창을 닫으면 <strong>브라우저 화면도 더 이상 동작하지 않습니다.</strong>
-          다 쓰고 <strong>끝내실 때</strong> 까만 창을 닫으시면 됩니다.
-        </p>
-        <p class="prose">
-          브라우저가 저절로 안 열리면 주소창에 <code>http://127.0.0.1:8777</code> 을 직접 입력하세요.
-          인터넷 주소처럼 보이지만 <strong>내 컴퓨터 안에서만 도는 화면</strong>입니다.
+          프로그램이 켜져 있는 동안 까만 창은 계속 떠 있습니다. <strong>이 창이 프로그램 본체입니다.</strong>
+          닫으면 프로그램도 같이 꺼집니다. 다 쓰고 <strong>끝내실 때</strong> 닫으시면 됩니다.
         </p>
       </div>
     </section>
 
-    <!-- ══════════════ 4 · 평소 쓰기 ══════════════ -->
+    <!-- ══════════════ 3 · Live Highlight 쓰는 법 ══════════════ -->
+
+    <section id="lh-obs">
+      <p class="sec-kicker">3 · Live Highlight 쓰는 법</p>
+      <h2>방송 전 OBS 설정 (한 번만)</h2>
+      <p class="prose">
+        <strong>마이크를 별도 트랙으로 녹음</strong>해 두면 결과가 훨씬 정확해집니다.
+        전체 소리에 게임 소리·BGM이 섞여 있으면 웃음소리를 구분하기 어렵기 때문입니다.
+      </p>
+      <div class="tablewrap">
+        <table>
+          <tr><th>트랙 1</th><td>전체 믹스 (게임 소리 + 마이크 + BGM) — 클립·숏츠에 들어갈 소리</td></tr>
+          <tr><th>트랙 2</th><td><strong>마이크만</strong> — 웃음·리액션을 찾는 데 씁니다</td></tr>
+        </table>
+      </div>
+      <p class="prose step-note">
+        OBS → 설정 → 출력 → 녹화 → 오디오 트랙에서 1번과 2번을 체크하고,
+        오디오 믹서의 톱니바퀴 → 오디오 고급 속성에서 마이크를 트랙 2에만 배정하시면 됩니다.
+        <strong>안 해도 동작은 합니다</strong> — 정확도만 조금 떨어집니다.
+      </p>
+    </section>
+
+    <section id="lh-new">
+      <p class="sec-kicker">3 · Live Highlight 쓰는 법</p>
+      <h2>분석 걸기</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <h3>새 방송 분석 누르기</h3>
+            <p class="prose">왼쪽의 <span class="btn">+ 새 방송 분석</span> 을 누릅니다.
+              방송 1회당 프로젝트 1개라고 보시면 됩니다.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <h3>녹화 파일 고르기</h3>
+            <p class="prose">폴더를 눌러 들어가고, 🎬 영상 파일을 클릭하면 아래 "선택된 파일" 에 들어갑니다.
+              위쪽 <span class="btn">홈</span> <span class="btn">다운로드</span>
+              <span class="btn">동영상</span> 버튼으로 빠르게 이동할 수 있습니다.</p>
+            <p class="step-note">맥의 일반 파일 선택창이 아니라 프로그램 자체 파일 목록입니다.
+              5시간짜리 영상을 통째로 올릴 수는 없어서 이렇게 만들었습니다.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <h3>유튜브 다시보기 주소 붙여넣기</h3>
+            <p class="prose">시청자 채팅 반응을 쓰려면 필요합니다.
+              <strong>비워도 됩니다</strong> — 그러면 목소리만으로 찾습니다.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">04</div>
+          <div class="step-body">
+            <h3>분석 시작</h3>
+            <p class="prose">
+              <strong>마이크 트랙</strong>은 보통 <code>트랙 2</code> 가 자동으로 잡힙니다.
+              체크박스들은 기본값 그대로 두시고 <span class="btn">분석 시작</span> 을 누르세요.
+            </p>
+            <div class="tablewrap">
+              <table>
+                <tr><th>방송 길이</th><th>걸리는 시간</th></tr>
+                <tr><td>1시간</td><td>1~3분</td></tr>
+                <tr><td>5시간</td><td>5~15분</td></tr>
+              </table>
+            </div>
+            <p class="step-note">이 동안 브라우저 탭을 닫아도 분석은 계속됩니다. 다시 열면 진행 상황이 보입니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="lh-sync">
+      <p class="sec-kicker">3 · Live Highlight 쓰는 법</p>
+      <h2>⚠️ 시간 맞추기 — 가장 중요한 단계</h2>
+      <p class="prose">
+        채팅 시간과 영상 시간은 <strong>서로 다릅니다.</strong>
+        방송 시작 전에 녹화를 먼저 켜셨다면 그만큼 차이가 나기 때문입니다.
+        프로그램이 자동으로 맞추지만, <strong>한 번은 눈으로 확인해야</strong> 합니다.
+      </p>
+      <div class="callout is-stop">
+        <span class="callout-label">이걸 건너뛰면</span>
+        <p class="prose">
+          찾아준 구간이 <strong>전부 엉뚱한 곳</strong>이 됩니다.
+          30초면 확인되니 꼭 하고 넘어가세요.
+        </p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <h3>아무 후보나 미리보기 만들기</h3>
+            <p class="prose"><strong>하이라이트 후보</strong> 목록에서 아무거나 하나 골라
+              <span class="btn">미리보기 만들기</span> 를 누릅니다.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <h3>재생해서 확인</h3>
+            <p class="prose">그 구간에서 <strong>실제로 웃거나 반응이 터지는지</strong> 봅니다.
+              맞으면 끝입니다.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <h3>어긋나면 숫자로 고치기</h3>
+            <div class="tablewrap">
+              <table>
+                <tr><th>이런 증상이면</th><th>이렇게 하세요</th></tr>
+                <tr><td>반응이 클립 <strong>끝난 뒤에</strong> 나온다</td><td>오프셋을 <strong>올린다</strong> (+10, +30…)</td></tr>
+                <tr><td>반응이 클립 <strong>시작 전에</strong> 이미 지나갔다</td><td>오프셋을 <strong>내린다</strong></td></tr>
+                <tr><td>완전히 엉뚱하다</td><td><span class="btn">자동 보정</span> 을 눌러본다</td></tr>
+              </table>
+            </div>
+            <p class="step-note">숫자를 바꾸면 후보 전체가 자동으로 다시 계산됩니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="lh-pick">
+      <p class="sec-kicker">3 · Live Highlight 쓰는 법</p>
+      <h2>쓸 구간 고르기</h2>
+      <p class="prose">
+        <strong>하이라이트 후보</strong> 목록에서 후보 하나하나가 이렇게 보입니다.
+      </p>
+      <div class="screen">☑ #3  <b>✂️ 클립 요청</b>   1:37:20 ~ 1:38:05 (45초)      점수 7.15
+      클립 요청 +5.1, 채팅 폭주 +12.0        <span class="c">← 왜 뽑혔는지</span>
+      1:37:58 시청자: 이거 클립 ㅋㅋ          <span class="c">← 그 순간 채팅</span></div>
+
+      <p class="prose"><strong>왜 뽑혔는지와 그때 채팅이 같이 보이니</strong>, 영상을 안 열어봐도 대충 감이 옵니다.</p>
+
+      <h3>딱지 뜻</h3>
+      <div class="tablewrap">
+        <table>
+          <tr><td>✂️ <strong>클립 요청</strong></td><td>시청자가 "클립" "편집해줘" 라고 직접 지목 — <strong>가장 믿을 만합니다</strong></td></tr>
+          <tr><td>💸 <strong>슈퍼챗</strong></td><td>후원이 몰린 순간</td></tr>
+          <tr><td>😂 <strong>채팅 폭소</strong></td><td>채팅창에 ㅋㅋ가 쏟아진 순간</td></tr>
+          <tr><td>🤣 <strong>본인 폭소</strong></td><td>방송자가 크게 웃은 순간</td></tr>
+          <tr><td>🔥 <strong>채팅 흥분</strong></td><td>ㄷㄷ, 대박, 레전드, 헐 …</td></tr>
+          <tr><td>💬 <strong>채팅 폭주</strong></td><td>이유는 몰라도 채팅이 폭발한 순간</td></tr>
+          <tr><td>📢 <strong>리액션 큼</strong></td><td>목소리가 크게 올라간 순간</td></tr>
+        </table>
+      </div>
+
+      <h3>여기서 할 일</h3>
+      <div class="tablewrap">
+        <table>
+          <tr><th>체크박스</th><td>쓸 것만 남깁니다. <span class="btn">상위 10개만</span> 버튼이 편합니다</td></tr>
+          <tr><th>제목·메모</th><td>적어두면 <strong>프리미어에서 그대로 보입니다.</strong> 나중에 편집할 때 훨씬 편해요</td></tr>
+          <tr><th>±5초 버튼</th><td>앞뒤를 다듬습니다. 시작이 늦게 잡혔으면 <span class="btn">◀ 시작-5</span></td></tr>
+          <tr><th>미리보기</th><td>애매한 것만 확인하세요. 전부 만들 필요 없습니다</td></tr>
+        </table>
+      </div>
+
+      <div class="callout">
+        <span class="callout-label">후보 수가 마음에 안 들면</span>
+        <p class="prose">
+          <strong>검출 설정</strong> 슬라이더를 움직이고 <span class="btn">다시 검출</span> 을 누르세요.
+          다시 분석하는 게 아니라서 <strong>1초면 끝납니다.</strong> 마음껏 시도해 보세요.
+        </p>
+        <div class="tablewrap">
+          <table>
+            <tr><td>후보가 너무 많다</td><td><code>검출 임계값</code> 올리기 (1.8 → 2.2)</td></tr>
+            <tr><td>놓친 게 있는 것 같다</td><td><code>검출 임계값</code> 내리기 (1.4~1.6)</td></tr>
+            <tr><td>채팅이 적은 방송이었다</td><td><code>마이크 음량</code>·<code>웃음 진동</code> 가중치 올리기</td></tr>
+            <tr><td>후보들이 너무 붙어 나온다</td><td><code>후보 최소 간격</code> 올리기 (45 → 90)</td></tr>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="lh-export">
+      <p class="sec-kicker">3 · Live Highlight 쓰는 법</p>
+      <h2>내보내기</h2>
+      <p class="prose"><strong>내보내기</strong> 칸에서 용도에 맞는 버튼을 누르시면 됩니다.</p>
+      <div class="tablewrap">
+        <table>
+          <tr><th>만들고 싶은 것</th><th>누를 버튼</th><th>결과</th></tr>
+          <tr>
+            <td><strong>20분짜리 편집 영상</strong></td>
+            <td><span class="btn">프리미어 XML · 러프컷</span></td>
+            <td>고른 구간만 순서대로 이어붙인 상태로 열립니다. 다듬으면 바로 완성</td>
+          </tr>
+          <tr>
+            <td><strong>직접 고르며 편집</strong></td>
+            <td><span class="btn">프리미어 XML · 마커</span></td>
+            <td>원본 전체 + 후보마다 표시. 표시를 옮겨다니며 자르면 됩니다</td>
+          </tr>
+          <tr>
+            <td><strong>숏츠</strong></td>
+            <td><span class="btn">숏츠 일괄 (9:16)</span></td>
+            <td>세로 영상이 후보마다 하나씩 나옵니다</td>
+          </tr>
+        </table>
+      </div>
+
+      <h3>숏츠 옵션</h3>
+      <div class="tablewrap">
+        <table>
+          <tr><th>블러 배경</th><td>화면을 그대로 두고 위아래를 흐리게 채웁니다. <strong>게임 화면이 잘리면 안 될 때</strong></td></tr>
+          <tr><th>꽉 채우기</th><td>좌우를 잘라 꽉 채웁니다. <code>크롭 중심</code> 으로 어디를 남길지 지정
+            (얼굴캠이 오른쪽 아래면 0.7~0.8)</td></tr>
+          <tr><th>최대 길이</th><td>기본 59초. 넘는 건 가장 반응이 컸던 지점 중심으로 잘립니다</td></tr>
+        </table>
+      </div>
+
+      <h3>프리미어로 가져가기</h3>
+      <p class="prose">
+        프리미어 → <strong>파일 → 가져오기</strong> → 만들어진 <code>.xml</code> 파일 선택.
+        각 결과 옆 <span class="btn">Finder에서 보기</span> 를 누르면 파일 위치가 바로 열립니다.
+      </p>
+      <div class="callout is-key">
+        <span class="callout-label">덤으로 나오는 것</span>
+        <p class="prose">
+          XML과 함께 <strong>후보 목록이 CSV·TXT로도 저장됩니다.</strong>
+          타임코드와 그 순간 채팅이 들어 있어서, <strong>영상 설명란 타임스탬프</strong>로 그대로 쓰실 수 있습니다.
+        </p>
+      </div>
+      <p class="prose step-note">
+        편집이 끝난 방송은 <span class="btn">프로젝트 삭제</span> 로 정리하세요.
+        미리보기 파일이 쌓이면 용량이 커집니다. <strong>원본 영상은 절대 지워지지 않습니다.</strong>
+      </p>
+    </section>
+
+    <!-- ══════════════ 4 · AutoCut 쓰는 법 ══════════════ -->
+
+    <section id="ac-drop">
+      <p class="sec-kicker">4 · AutoCut 쓰는 법</p>
+      <h2>영상 넣기</h2>
+      <p class="prose">
+        창 안으로 <strong>영상 파일을 끌어다 놓습니다.</strong> 한 번에 한 개씩입니다.
+        <strong>설정은 전부 그대로 두셔도 됩니다.</strong>
+      </p>
+      <div class="screen">미디어 확인 → 오디오 분석 …% → 무음 감지 → 강조 감지 → XML 생성 → <b>완료</b></div>
+      <div class="tablewrap">
+        <table>
+          <tr><th>영상 길이</th><th>걸리는 시간</th></tr>
+          <tr><td>5분</td><td>3초</td></tr>
+          <tr><td>1시간</td><td>13초</td></tr>
+          <tr><td>10시간</td><td>약 4분</td></tr>
+        </table>
+      </div>
+      <p class="prose">끝나면 <strong>원본과 같은 폴더</strong>에 파일이 하나 생깁니다.</p>
+      <div class="screen">촬영본.mp4                <span class="c">← 원본. 그대로 있습니다</span>
+촬영본_autocut.xml        <span class="c">← 프리미어에서 열 파일</span></div>
+    </section>
+
+    <section id="ac-premiere">
+      <p class="sec-kicker">4 · AutoCut 쓰는 법</p>
+      <h2>프리미어에서 열기</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <p class="prose">프리미어에서 <strong>파일 → 가져오기</strong></p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <p class="prose"><code>촬영본_autocut.xml</code> 을 고릅니다</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <p class="prose">프로젝트 패널에 <strong>AutoCut</strong> 시퀀스가 생깁니다. 더블클릭해서 여세요</p>
+            <p class="step-note">표시(마커)는 <strong>창 → 마커</strong> 패널에서 보입니다.</p>
+          </div>
+        </div>
+      </div>
+      <div class="callout is-warn">
+        <span class="callout-label">⚠️ 영상 파일을 옮기지 마세요</span>
+        <p class="prose">
+          XML은 <strong>영상 파일의 위치를 가리키는 것</strong>이라, 영상을 다른 폴더로 옮기거나
+          이름을 바꾸면 프리미어가 화면을 못 찾습니다.
+        </p>
+        <p class="prose">
+          이미 옮기셨다면 프리미어에서 <strong>미디어 다시 연결(Link Media)</strong> 로
+          영상을 지정해 주시면 됩니다.
+        </p>
+      </div>
+    </section>
+
+    <section id="ac-tune">
+      <p class="sec-kicker">4 · AutoCut 쓰는 법</p>
+      <h2>결과 조절하기</h2>
+      <p class="prose">
+        마음에 안 들면 <strong>설정을 바꾸고 같은 영상을 다시 끌어다 놓으면</strong> 됩니다.
+        결과 파일은 덮어써집니다.
+      </p>
+      <div class="tablewrap">
+        <table>
+          <tr><th>설정</th><th>기본값</th><th>무슨 뜻인가</th></tr>
+          <tr><td><strong>무음 임계값</strong></td><td>-40 dB</td>
+              <td>이 음량보다 조용하면 "침묵" 으로 봅니다.
+              <strong>올리면 더 많이</strong> 잘리고, <strong>내리면 덜</strong> 잘립니다</td></tr>
+          <tr><td><strong>무음 최소 길이</strong></td><td>0.5초</td>
+              <td>이보다 짧은 침묵은 두고 갑니다. 말 사이 숨 쉬는 틈을 지키려는 값입니다</td></tr>
+          <tr><td><strong>강조 민감도</strong></td><td>1.0</td><td>높이면 표시(마커)가 많아집니다</td></tr>
+          <tr><td><strong>강조 마커 표시</strong></td><td>켬</td><td>끄면 표시 없이 자르기만 합니다</td></tr>
+        </table>
+      </div>
+      <div class="callout">
+        <span class="callout-label">mkv로 녹화하신다면</span>
+        <p class="prose">
+          프리미어는 <code>.mkv</code> 를 못 읽습니다. OBS 기본 포맷이 mkv라서,
+          AutoCut이 <strong>화질 손실 없이</strong> mp4로 다시 포장하고 그 파일을 가리키게 합니다.
+          <strong>원본은 그대로 두니</strong> 따로 하실 일은 없습니다.
+        </p>
+      </div>
+    </section>
+
+    <!-- ══════════════ 5 · 평소 쓰기 ══════════════ -->
 
     <section id="daily">
-      <p class="sec-kicker">4 · 평소 쓰기</p>
+      <p class="sec-kicker">5 · 평소 쓰기</p>
       <h2>매번 이것만 하면 됩니다</h2>
-      <div class="action">그냥 <code>업데이트.command</code> 를 더블클릭하세요.</div>
+      <div class="action">프로그램 폴더의 <code>업데이트.command</code> 를 더블클릭</div>
       <p class="prose">
         프로그램을 고쳤다는 연락을 받으셨을 때도, 평소에 그냥 쓰실 때도 <strong>똑같이 이 파일</strong>입니다.
         최신 버전을 알아서 받아오고 바로 실행까지 됩니다.
@@ -549,37 +773,39 @@
       </p>
     </section>
 
-    <!-- ══════════════ 5 · 막혔을 때 ══════════════ -->
+    <!-- ══════════════ 6 · 막혔을 때 ══════════════ -->
 
     <section id="trouble">
-      <p class="sec-kicker">5 · 막혔을 때</p>
+      <p class="sec-kicker">6 · 막혔을 때</p>
       <h2>문제 해결</h2>
       <div class="tablewrap">
         <table>
           <tr><th>이런 일이 생기면</th><th>이렇게 해보세요</th></tr>
           <tr><td>"확인되지 않은 개발자" 라고 뜬다</td><td>파일을 <strong>오른쪽 클릭 → 열기 → 열기</strong></td></tr>
           <tr><td>까만 창이 뜨자마자 사라진다</td><td>오른쪽 클릭 → 열기 로 다시 해보세요</td></tr>
-          <tr><td>한참 아무 반응이 없다</td><td>처음 실행이라면 정상입니다. 5분은 기다려 주세요</td></tr>
+          <tr><td>한참 아무 반응이 없다</td><td>첫 실행이라면 정상입니다. 5분은 기다려 주세요</td></tr>
           <tr><td>브라우저가 저절로 안 열린다<br><span class="muted">Live Highlight</span></td>
               <td>주소창에 <code>http://127.0.0.1:8777</code> 직접 입력</td></tr>
-          <tr><td>브라우저 화면이 갑자기 안 된다<br><span class="muted">Live Highlight</span></td>
+          <tr><td>화면이 갑자기 안 된다<br><span class="muted">Live Highlight</span></td>
               <td>까만 창이 닫히지 않았는지 확인해 주세요</td></tr>
+          <tr><td>찾아준 구간이 전부 엉뚱하다<br><span class="muted">Live Highlight</span></td>
+              <td><a href="#lh-sync">시간 맞추기</a> 를 다시 해보세요. 대부분 이 문제입니다</td></tr>
+          <tr><td>프리미어에서 화면이 안 보인다<br><span class="muted">AutoCut</span></td>
+              <td>영상 파일을 옮기셨는지 확인. <strong>미디어 다시 연결</strong> 로 지정해 주세요</td></tr>
           <tr><td>"업데이트를 받지 못했습니다"</td><td>그냥 쓰셔도 됩니다. 인터넷 연결을 확인해 보세요</td></tr>
         </table>
       </div>
     </section>
 
     <section id="help">
-      <p class="sec-kicker">5 · 막혔을 때</p>
+      <p class="sec-kicker">6 · 막혔을 때</p>
       <h2>도움 요청하는 법</h2>
       <div class="callout is-key">
         <span class="callout-label">이렇게 알려주시면 가장 빠릅니다</span>
         <p class="prose">
           <strong>까만 창에 나온 글자를 사진으로 찍거나, 드래그해서 복사해 보내주세요.</strong>
         </p>
-        <p class="prose">
-          무슨 뜻인지 몰라도 괜찮습니다. 그대로 보내주시면 됩니다.
-        </p>
+        <p class="prose">무슨 뜻인지 몰라도 괜찮습니다. 그대로 보내주시면 됩니다.</p>
       </div>
     </section>
 
@@ -587,18 +813,17 @@
 </div>
 
 <footer>
-  각 프로그램의 자세한 사용법은 받으신 폴더 안 <code>사용법.md</code> 에 정리되어 있습니다.
+  더 자세한 내용은 각 프로그램 폴더 안 <code>사용법.md</code> 에 있습니다.
 </footer>
 
 <script>
   // 스크롤에 따라 목차의 현재 위치를 표시한다.
   (function () {
-    var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
-    var map = {};
-    var targets = [];
+    var links = Array.prototype.slice.call(document.querySelectorAll('.toc a[href^="#"]'));
+    var map = {}, targets = [];
     links.forEach(function (a) {
       var el = document.getElementById(a.getAttribute('href').slice(1));
-      if (el) { map[el.id] = a; targets.push(el); }
+      if (el && targets.indexOf(el) === -1) { map[el.id] = a; targets.push(el); }
     });
     if (!targets.length) return;
 
@@ -617,7 +842,6 @@
       for (var i = 0; i < targets.length; i++) {
         if (targets[i].getBoundingClientRect().top <= line) best = targets[i];
       }
-      // 맨 아래까지 내렸으면 마지막 항목을 켠다.
       if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 2) {
         best = targets[targets.length - 1];
       }
