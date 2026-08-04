@@ -133,6 +133,33 @@
     padding: 0.2rem 0.55rem; border-radius: 999px;
   }
 
+  /* 파트 구분선 — 큰 단위가 바뀌는 지점을 눈에 띄게 */
+  .part {
+    display: flex; align-items: center; gap: 0.9rem;
+    margin: clamp(1.5rem, 4vw, 3rem) 0 0.25rem;
+  }
+  .part .num {
+    flex: none; font-family: var(--font-mono); font-size: 0.82rem; font-weight: 700;
+    color: var(--paper); background: var(--ink);
+    border-radius: 999px; padding: 0.1rem 0.7rem; letter-spacing: 0.06em;
+  }
+  .part .name {
+    flex: none; font-size: 1.02rem; font-weight: 800; letter-spacing: -0.01em; color: var(--ink);
+  }
+  .part .line { flex: 1 1 auto; height: 2px; background: var(--ink); opacity: 0.14; }
+  .part + section { padding-top: 0.25rem; }
+  .part + section .sec-kicker { display: none; }
+
+  /* 기대효과 숫자 타일 */
+  .gain { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 0.9rem; }
+  .gain div {
+    background: var(--paper-2); border: 1px solid var(--rule); border-radius: 12px;
+    padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: 0.15rem;
+  }
+  .gain .k { font-size: 0.86rem; color: var(--ink-3); }
+  .gain .n { font-size: 1.5rem; font-weight: 800; color: var(--keep); letter-spacing: -0.02em; line-height: 1.2; }
+  .gain .s { font-size: 0.84rem; color: var(--ink-3); }
+
   .steps { display: flex; flex-direction: column; gap: 1.35rem; }
   .step { display: grid; grid-template-columns: 2.6rem minmax(0, 1fr); gap: 0.9rem; align-items: start; }
   .step-num {
@@ -251,7 +278,7 @@
     .toc { display: none; }
     .layout { grid-template-columns: 1fr; padding-bottom: 0; }
     section, .card, .callout, .step { page-break-inside: avoid; }
-    section h2 { page-break-after: avoid; }
+    section h2, .part { page-break-after: avoid; }
   }
 </style>
 </head>
@@ -271,6 +298,10 @@
   <details class="toc" id="toc" open>
     <summary>목차</summary>
     <div class="toc-inner">
+      <div class="toc-group">
+        <p>0 · 왜 쓰나</p>
+        <a href="#why">얼마나 편해지나</a>
+      </div>
       <div class="toc-group">
         <p>1 · 이게 뭔가요</p>
         <a href="#intro">두 프로그램이 하는 일</a>
@@ -311,7 +342,122 @@
 
   <main>
 
+    <!-- ══════════════ 0 · 왜 쓰나 ══════════════ -->
+
+    <div class="part">
+      <span class="num">0</span>
+      <span class="name">왜 쓰나</span>
+      <span class="line"></span>
+    </div>
+
+    <section id="why">
+      <p class="sec-kicker">0 · 왜 쓰나</p>
+      <h2>무엇을 대신 해주나</h2>
+      <p class="prose">
+        긴 녹화를 편집할 때 앞단에는 <strong>판단이 아니라 훑기</strong>가 있습니다.
+        어디서 반응이 좋았는지, 어디가 비어 있는지 알려면 결국 전체를 한 번은 봐야 하니까요.
+        이 프로그램들은 <strong>그 훑는 일</strong>을 대신합니다. 무엇을 쓸지는 여전히 본인이 정합니다.
+      </p>
+
+      <figure>
+        <svg viewBox="0 0 600 268" role="img"
+             aria-label="긴 녹화 전체를 프로그램이 소리 크기와 채팅 반응으로 훑어, 쓸 만한 구간만 뽑아내는 과정">
+          <text class="s-t b" x="0" y="46">5시간 녹화</text>
+          <rect class="s-bg" x="118" y="32" width="460" height="28" rx="5"/>
+          <text class="s-t sm mid" x="164" y="47">?</text>
+          <text class="s-t sm mid" x="256" y="47">?</text>
+          <text class="s-t sm mid" x="348" y="47">?</text>
+          <text class="s-t sm mid" x="440" y="47">?</text>
+          <text class="s-t sm mid" x="532" y="47">?</text>
+          <text class="s-t sm" x="0" y="68">눈으로는 어디가</text>
+          <text class="s-t sm" x="0" y="80">쓸 만한지 모릅니다</text>
+          <text class="s-t b" x="0" y="126">프로그램이</text>
+          <text class="s-t b" x="0" y="140">훑습니다</text>
+          <path class="s-mark" d="M187 88 l5 8 l5 -8 z"/>
+          <path class="s-mark" d="M306 88 l5 8 l5 -8 z"/>
+          <path class="s-mark" d="M472 88 l5 8 l5 -8 z"/>
+          <text class="s-t sm" x="203" y="88">반응이 튄 곳 = 후보</text>
+          <path class="s-stroke-keep" d="M118.0,128.2 L124.1,128.6 L130.1,129.7 L136.2,130.0 L142.2,130.5 L148.3,128.5 L154.3,130.8 L160.4,128.2 L166.4,129.3 L172.5,118.6 L178.5,110.8 L184.6,106.0 L190.6,104.0 L196.7,105.0 L202.7,108.9 L208.8,115.8 L214.8,125.5 L220.9,130.9 L226.9,128.4 L233.0,130.9 L239.1,128.8 L245.1,130.4 L251.2,130.2 L257.2,130.2 L263.3,129.9 L269.3,129.3 L275.4,128.8 L281.4,130.4 L287.5,126.4 L293.5,116.4 L299.6,109.4 L305.6,105.2 L311.7,104.0 L317.7,105.7 L323.8,110.3 L329.8,117.8 L335.9,128.3 L341.9,130.7 L348.0,128.8 L354.1,130.2 L360.1,129.8 L366.2,130.3 L372.2,130.4 L378.3,128.3 L384.3,128.3 L390.4,129.3 L396.4,130.7 L402.5,129.7 L408.5,128.9 L414.6,129.5 L420.6,129.4 L426.7,128.1 L432.7,128.3 L438.8,128.3 L444.8,130.9 L450.9,130.9 L456.9,119.7 L463.0,111.6 L469.1,106.4 L475.1,104.1 L481.2,104.8 L487.2,108.3 L493.3,114.8 L499.3,124.2 L505.4,128.9 L511.4,130.0 L517.5,128.9 L523.5,130.8 L529.6,128.6 L535.6,128.0 L541.7,128.6 L547.7,128.2 L553.8,129.7 L559.8,129.6 L565.9,129.3 L571.9,128.2 L578.0,130.3" stroke-width="1.8"/>
+          <text class="s-t sm" x="596" y="112" text-anchor="end" fill="var(--keep)">채팅 반응</text>
+          <rect class="s-cut" x="247" y="144" width="37" height="32" rx="3" opacity="0.16"/>
+          <text class="s-t sm mid" x="265" y="189" fill="var(--cut)">무음</text>
+          <rect class="s-cut" x="385" y="144" width="37" height="32" rx="3" opacity="0.16"/>
+          <text class="s-t sm mid" x="403" y="189" fill="var(--cut)">무음</text>
+          <path class="s-ink-3" d="M118.0,151.1 L124.1,153.1 L130.1,153.1 L136.2,152.6 L142.2,150.8 L148.3,152.6 L154.3,152.7 L160.4,154.0 L166.4,152.0 L172.5,155.0 L178.5,144.4 L184.6,144.3 L190.6,146.0 L196.7,146.3 L202.7,145.2 L208.8,152.7 L214.8,152.9 L220.9,148.5 L226.9,154.8 L233.0,153.5 L239.1,151.1 L245.1,154.7 L251.2,158.6 L257.2,158.8 L263.3,158.6 L269.3,158.3 L275.4,158.7 L281.4,158.7 L287.5,153.6 L293.5,155.4 L299.6,147.8 L305.6,144.8 L311.7,145.5 L317.7,145.5 L323.8,146.5 L329.8,155.0 L335.9,154.0 L341.9,149.4 L348.0,155.1 L354.1,153.4 L360.1,151.9 L366.2,154.6 L372.2,149.1 L378.3,153.2 L384.3,151.7 L390.4,158.6 L396.4,158.2 L402.5,158.6 L408.5,158.6 L414.6,158.7 L420.6,158.8 L426.7,149.4 L432.7,155.1 L438.8,148.7 L444.8,154.3 L450.9,154.8 L456.9,154.2 L463.0,153.2 L469.1,147.1 L475.1,146.3 L481.2,147.4 L487.2,146.4 L493.3,151.2 L499.3,153.4 L505.4,154.6 L511.4,154.2 L517.5,154.6 L523.5,154.3 L529.6,152.5 L535.6,152.4 L541.7,150.4 L547.7,152.9 L553.8,154.3 L559.8,153.4 L565.9,154.6 L571.9,153.6 L578.0,154.2 L578.0,165.8 L571.9,166.4 L565.9,165.4 L559.8,166.6 L553.8,165.7 L547.7,167.1 L541.7,169.6 L535.6,167.6 L529.6,167.5 L523.5,165.7 L517.5,165.4 L511.4,165.8 L505.4,165.4 L499.3,166.6 L493.3,168.8 L487.2,173.6 L481.2,172.6 L475.1,173.7 L469.1,172.9 L463.0,166.8 L456.9,165.8 L450.9,165.2 L444.8,165.7 L438.8,171.3 L432.7,164.9 L426.7,170.6 L420.6,161.2 L414.6,161.3 L408.5,161.4 L402.5,161.4 L396.4,161.8 L390.4,161.4 L384.3,168.3 L378.3,166.8 L372.2,170.9 L366.2,165.4 L360.1,168.1 L354.1,166.6 L348.0,164.9 L341.9,170.6 L335.9,166.0 L329.8,165.0 L323.8,173.5 L317.7,174.5 L311.7,174.5 L305.6,175.2 L299.6,172.2 L293.5,164.6 L287.5,166.4 L281.4,161.3 L275.4,161.3 L269.3,161.7 L263.3,161.4 L257.2,161.2 L251.2,161.4 L245.1,165.3 L239.1,168.9 L233.0,166.5 L226.9,165.2 L220.9,171.5 L214.8,167.1 L208.8,167.3 L202.7,174.8 L196.7,173.7 L190.6,174.0 L184.6,175.7 L178.5,175.6 L172.5,165.0 L166.4,168.0 L160.4,166.0 L154.3,167.3 L148.3,167.4 L142.2,169.2 L136.2,167.4 L130.1,166.9 L124.1,166.9 L118.0,168.9 Z" opacity="0.6"/>
+          <text class="s-t sm" x="596" y="176" text-anchor="end">소리 크기</text>
+          <text class="s-t b" x="0" y="230">남는 것</text>
+          <rect class="s-keep" x="118" y="216" width="46" height="28" rx="5"/>
+          <rect class="s-keep" x="170" y="216" width="39" height="28" rx="5"/>
+          <rect class="s-keep" x="215" y="216" width="55" height="28" rx="5"/>
+          <path class="s-stroke-ink3" d="M192 200 L141 212" stroke-width="1" stroke-dasharray="3 3"/>
+          <path class="s-stroke-ink3" d="M311 200 L190 212" stroke-width="1" stroke-dasharray="3 3"/>
+          <path class="s-stroke-ink3" d="M477 200 L243 212" stroke-width="1" stroke-dasharray="3 3"/>
+          <text class="s-t sm" x="286" y="230">이 구간만 프리미어로 넘깁니다</text>
+        </svg>
+        <figcaption>
+          프로그램은 영상을 보지 않습니다. <strong>소리 크기</strong>와 <strong>시청자 채팅 반응</strong>,
+          이 두 가지만 처음부터 끝까지 훑어서 표시해 줍니다.
+        </figcaption>
+      </figure>
+
+      <div class="tablewrap">
+        <table>
+          <thead><tr><th>이 일은 프로그램이</th><th>이 일은 그대로 본인이</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>녹화 전체를 훑어 소리·채팅 반응을 재기</td>
+              <td>후보 중에서 <strong>무엇을 쓸지 고르기</strong></td>
+            </tr>
+            <tr>
+              <td>반응이 튄 지점을 순위로 정리하기</td>
+              <td>구간 앞뒤를 <strong>몇 초씩 다듬기</strong></td>
+            </tr>
+            <tr>
+              <td>말 없는 구간을 찾아 잘라낸 편집본 만들기</td>
+              <td>프리미어에서 <strong>마무리 편집</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="prose">아래는 처리에 걸리는 시간입니다. 사람이 하던 시간과 비교한 값이 아니라, 프로그램이 실제로 도는 시간입니다.</p>
+
+      <div class="gain">
+        <div>
+          <span class="k">1시간 영상 분석</span>
+          <span class="n">13초</span>
+          <span class="s">AutoCut · 무음 찾아 컷</span>
+        </div>
+        <div>
+          <span class="k">10시간 · 100GB 영상</span>
+          <span class="n">4분</span>
+          <span class="s">파일이 커도 재생 길이만 따릅니다</span>
+        </div>
+        <div>
+          <span class="k">영상 화질</span>
+          <span class="n">그대로</span>
+          <span class="s">다시 인코딩하지 않습니다</span>
+        </div>
+      </div>
+      <p class="prose muted">Intel 맥에서 직접 재본 값입니다. 컴퓨터에 따라 다를 수 있습니다.</p>
+
+      <div class="callout is-key">
+        <p class="callout-label">한 가지 솔직하게</p>
+        <p class="prose">
+          <strong>완성본을 뽑아주는 도구는 아닙니다.</strong>
+          "이제 다듬기만 남은 상태"로 만들어 주는 것까지가 이 프로그램들의 몫입니다.
+          어디가 후보인지는 프로그램이 찾아주지만, <strong>무엇을 쓸지는 늘 편집하는 사람이 정합니다.</strong>
+        </p>
+      </div>
+    </section>
+
     <!-- ══════════════ 1 · 이게 뭔가요 ══════════════ -->
+
+    <div class="part">
+      <span class="num">1</span>
+      <span class="name">이게 뭔가요</span>
+      <span class="line"></span>
+    </div>
 
     <section id="intro">
       <p class="sec-kicker">1 · 이게 뭔가요</p>
@@ -487,6 +633,12 @@
 
     <!-- ══════════════ 2 · 설치하기 ══════════════ -->
 
+    <div class="part">
+      <span class="num">2</span>
+      <span class="name">설치하기</span>
+      <span class="line"></span>
+    </div>
+
     <section id="install">
       <p class="sec-kicker">2 · 설치하기</p>
       <h2>파일 하나로 설치</h2>
@@ -621,6 +773,12 @@
     </section>
 
     <!-- ══════════════ 3 · Live Highlight 쓰는 법 ══════════════ -->
+
+    <div class="part">
+      <span class="num">3</span>
+      <span class="name">Live Highlight 쓰는 법</span>
+      <span class="line"></span>
+    </div>
 
     <section id="lh-obs">
       <p class="sec-kicker">3 · Live Highlight 쓰는 법</p>
@@ -952,6 +1110,12 @@
 
     <!-- ══════════════ 4 · AutoCut 쓰는 법 ══════════════ -->
 
+    <div class="part">
+      <span class="num">4</span>
+      <span class="name">AutoCut 쓰는 법</span>
+      <span class="line"></span>
+    </div>
+
     <section id="ac-drop">
       <p class="sec-kicker">4 · AutoCut 쓰는 법</p>
       <h2>영상 넣기</h2>
@@ -1041,6 +1205,12 @@
 
     <!-- ══════════════ 5 · 평소 쓰기 ══════════════ -->
 
+    <div class="part">
+      <span class="num">5</span>
+      <span class="name">평소 쓰기</span>
+      <span class="line"></span>
+    </div>
+
     <section id="daily">
       <p class="sec-kicker">5 · 평소 쓰기</p>
       <h2>매번 이것만 하면 됩니다</h2>
@@ -1057,6 +1227,12 @@
     </section>
 
     <!-- ══════════════ 6 · 막혔을 때 ══════════════ -->
+
+    <div class="part">
+      <span class="num">6</span>
+      <span class="name">막혔을 때</span>
+      <span class="line"></span>
+    </div>
 
     <section id="trouble">
       <p class="sec-kicker">6 · 막혔을 때</p>
