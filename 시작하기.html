@@ -195,6 +195,38 @@
   .screen b { color: var(--ink); font-weight: 700; }
   .screen .c { color: var(--keep); }
 
+  /* ---------- 그림 ---------- */
+
+  figure {
+    margin: 0; background: var(--paper-2); border: 1px solid var(--rule);
+    border-radius: 14px; padding: clamp(1rem, 3vw, 1.4rem);
+    display: flex; flex-direction: column; gap: 0.85rem;
+  }
+  figure svg { display: block; width: 100%; height: auto; overflow: visible; }
+  figcaption { margin: 0; font-size: 0.9rem; color: var(--ink-3); text-align: center; }
+  figcaption strong { color: var(--ink-2); font-weight: 700; }
+
+  /* SVG 안에서 쓰는 색 — 라이트/다크 모두 따라간다 */
+  .s-bg   { fill: var(--sunk); }
+  .s-card { fill: var(--paper-2); }
+  .s-line { stroke: var(--rule); fill: none; }
+  .s-keep { fill: var(--keep); }
+  .s-cut  { fill: var(--cut); }
+  .s-mark { fill: var(--marker); }
+  .s-ink    { fill: var(--ink); }
+  .s-ink-2  { fill: var(--ink-2); }
+  .s-ink-3  { fill: var(--ink-3); }
+  .s-stroke-keep { stroke: var(--keep); fill: none; }
+  .s-stroke-cut  { stroke: var(--cut); fill: none; }
+  .s-stroke-ink3 { stroke: var(--ink-3); fill: none; }
+  .s-t {
+    font-family: var(--font-sans); font-size: 11px;
+    fill: var(--ink-2); dominant-baseline: middle;
+  }
+  .s-t.sm { font-size: 9.5px; fill: var(--ink-3); }
+  .s-t.b  { font-weight: 700; fill: var(--ink); }
+  .s-t.mid { text-anchor: middle; }
+
   footer {
     max-width: 76rem; margin: 0 auto; padding: 2rem var(--step) 4rem;
     border-top: 1px solid var(--rule); color: var(--ink-3); font-size: 0.92rem;
@@ -320,6 +352,57 @@
           </table>
         </div>
       </div>
+      <figure>
+        <svg viewBox="0 0 600 210" role="img" aria-label="방송 내내 시청자 반응을 그래프로 그려 튀는 지점을 후보로 뽑는 과정">
+          <text class="s-t b" x="0" y="14">시청자 반응</text>
+          <text class="s-t sm" x="0" y="150">방송 시작</text>
+          <text class="s-t sm" x="537" y="150">5시간 뒤</text>
+
+          <!-- 기준선 -->
+          <path class="s-stroke-cut" d="M0 78 H600" stroke-width="1.2" stroke-dasharray="4 4"/>
+          <text class="s-t sm" x="0" y="70" style="fill:var(--cut)">이 선을 넘으면 후보</text>
+
+          <!-- 반응 곡선 -->
+          <path class="s-stroke-keep" stroke-width="2"
+            d="M0 128 L26 122 L44 126 L62 108 L80 118 L100 30 L116 96 L134 120 L152 114
+               L170 124 L190 118 L208 128 L226 110 L244 44 L258 92 L276 122 L296 126
+               L314 116 L332 124 L350 120 L368 58 L384 104 L402 124 L422 118 L440 126
+               L458 112 L476 122 L494 34 L510 90 L528 118 L546 124 L568 120 L600 126"/>
+
+          <!-- 축 -->
+          <path class="s-stroke-ink3" d="M0 136 H600" stroke-width="1"/>
+
+          <!-- 후보 구간 표시 -->
+          <rect class="s-mark" x="88"  y="136" width="34" height="7" rx="3" opacity="0.85"/>
+          <rect class="s-mark" x="232" y="136" width="34" height="7" rx="3" opacity="0.85"/>
+          <rect class="s-mark" x="356" y="136" width="34" height="7" rx="3" opacity="0.85"/>
+          <rect class="s-mark" x="482" y="136" width="34" height="7" rx="3" opacity="0.85"/>
+
+          <!-- 뽑힌 후보 카드 -->
+          <text class="s-t b" x="0" y="172">뽑힌 구간</text>
+          <g>
+            <rect class="s-bg" x="0" y="182" width="140" height="22" rx="4"/>
+            <text class="s-t sm" x="8" y="193">✂️ 클립 요청 · 0:21</text>
+          </g>
+          <g>
+            <rect class="s-bg" x="150" y="182" width="140" height="22" rx="4"/>
+            <text class="s-t sm" x="158" y="193">😂 채팅 폭소 · 1:37</text>
+          </g>
+          <g>
+            <rect class="s-bg" x="300" y="182" width="140" height="22" rx="4"/>
+            <text class="s-t sm" x="308" y="193">💸 슈퍼챗 · 2:48</text>
+          </g>
+          <g>
+            <rect class="s-bg" x="450" y="182" width="140" height="22" rx="4"/>
+            <text class="s-t sm" x="458" y="193">🔥 채팅 흥분 · 4:02</text>
+          </g>
+        </svg>
+        <figcaption>
+          방송 내내 <strong>채팅과 목소리 반응을 그래프로 그려서</strong>, 유독 튀어 오른 지점을 후보로 뽑습니다.
+          <strong>평소보다 얼마나 튀었는지</strong>로 보기 때문에, 방송 초반과 후반의 시청자 수가 달라도 공평하게 비교됩니다.
+        </figcaption>
+      </figure>
+
       <p class="prose">
         이 신호들을 같이 보고 <strong>재밌었을 가능성이 높은 순서대로</strong> 구간 목록을 뽑아줍니다.
         미리보기로 확인한 다음, 마음에 드는 것만 골라 프리미어로 넘기거나
@@ -334,6 +417,48 @@
         영상을 창에 끌어다 놓으면 소리를 분석해서 <strong>아무 말 없는 구간을 잘라낸 편집본</strong>을
         만들어 줍니다. 목소리가 확 커지는 지점에는 <strong>표시(마커)</strong>도 찍어줍니다.
       </p>
+
+      <figure>
+        <svg viewBox="0 0 600 190" role="img" aria-label="원본 영상에서 조용한 구간을 잘라내 결과를 만드는 과정">
+          <!-- 원본 -->
+          <text class="s-t b" x="0" y="18">원본 영상</text>
+          <text class="s-t sm" x="530" y="18">1시간</text>
+          <rect class="s-bg" x="0" y="30" width="600" height="30" rx="5"/>
+          <!-- 말하는 구간 -->
+          <rect class="s-keep" x="2"   y="30" width="76" height="30" rx="4"/>
+          <rect class="s-keep" x="136" y="30" width="98" height="30" rx="4"/>
+          <rect class="s-keep" x="272" y="30" width="104" height="30" rx="4"/>
+          <rect class="s-keep" x="452" y="30" width="82" height="30" rx="4"/>
+          <!-- 조용한 구간 표시 -->
+          <text class="s-t sm mid" x="107" y="45">조용</text>
+          <text class="s-t sm mid" x="253" y="45">조용</text>
+          <text class="s-t sm mid" x="414" y="45">조용</text>
+          <text class="s-t sm mid" x="567" y="45">조용</text>
+
+          <!-- 화살표 -->
+          <path class="s-stroke-ink3" d="M300 72 L300 96" stroke-width="1.5"/>
+          <path class="s-stroke-ink3" d="M294 90 L300 97 L306 90" stroke-width="1.5"/>
+          <text class="s-t sm" x="312" y="86">조용한 곳을 걷어냅니다</text>
+
+          <!-- 결과 -->
+          <text class="s-t b" x="0" y="126">AutoCut 결과</text>
+          <text class="s-t sm" x="500" y="126">38분 · 22분 절약</text>
+          <rect class="s-bg" x="0" y="138" width="360" height="30" rx="5"/>
+          <rect class="s-keep" x="2"   y="138" width="76" height="30" rx="4"/>
+          <rect class="s-keep" x="82"  y="138" width="98" height="30" rx="4"/>
+          <rect class="s-keep" x="184" y="138" width="104" height="30" rx="4"/>
+          <rect class="s-keep" x="292" y="138" width="66" height="30" rx="4"/>
+          <!-- 마커 -->
+          <path class="s-mark" d="M120 132 l5 -8 l5 8 z"/>
+          <path class="s-mark" d="M232 132 l5 -8 l5 8 z"/>
+          <path class="s-mark" d="M320 132 l5 -8 l5 8 z"/>
+          <text class="s-t sm" x="372" y="153">▲ 목소리가 커진 지점 표시</text>
+        </svg>
+        <figcaption>
+          <strong>초록색이 말하는 구간</strong>입니다. 조용한 곳을 걷어내고 앞으로 당겨 붙입니다.
+          영상을 새로 만드는 게 아니라 "여기부터 여기까지" 라는 정보만 만들기 때문에 빠르고, 화질도 그대로입니다.
+        </figcaption>
+      </figure>
       <div class="callout is-key">
         <span class="callout-label">큰 파일도 괜찮습니다</span>
         <p class="prose">
@@ -380,6 +505,60 @@
         <p class="step-note">이 경고는 <strong>이 파일 딱 한 번</strong>만 나옵니다.
           설치된 프로그램들은 그냥 더블클릭으로 열립니다.</p>
       </div>
+
+      <figure>
+        <svg viewBox="0 0 600 215" role="img" aria-label="설치 파일을 오른쪽 클릭해 열기를 선택하고, 경고창에서 다시 열기를 누르는 순서">
+          <!-- 1 -->
+          <circle class="s-keep" cx="12" cy="14" r="11"/>
+          <text class="s-t mid" x="12" y="15" style="fill:var(--paper-2);font-weight:700">1</text>
+          <text class="s-t b" x="32" y="15">오른쪽 클릭</text>
+
+          <rect class="s-bg" x="0" y="34" width="150" height="52" rx="6"/>
+          <text class="s-t sm mid" x="75" y="51">📄</text>
+          <text class="s-t sm mid" x="75" y="72">설치.command</text>
+          <!-- 커서 — 파일 아이콘 위에 둔다 (글자와 겹치지 않게) -->
+          <path class="s-ink" d="M86 44 l0 17 l4.4 -4.4 l3 6.4 l2.8 -1.3 l-3 -6.2 l6 -0.2 z"/>
+
+          <!-- 메뉴 -->
+          <rect class="s-card" x="160" y="34" width="120" height="86" rx="6"/>
+          <rect class="s-line" x="160" y="34" width="120" height="86" rx="6" stroke-width="1"/>
+          <rect class="s-keep" x="164" y="40" width="112" height="20" rx="4"/>
+          <text class="s-t" x="174" y="51" style="fill:var(--paper-2);font-weight:700">열기</text>
+          <text class="s-t sm" x="174" y="73">태그…</text>
+          <text class="s-t sm" x="174" y="92">정보 가져오기</text>
+          <text class="s-t sm" x="174" y="111">이름 변경</text>
+
+          <!-- 화살표 -->
+          <path class="s-stroke-ink3" d="M296 77 H326" stroke-width="1.5"/>
+          <path class="s-stroke-ink3" d="M320 71 L327 77 L320 83" stroke-width="1.5"/>
+
+          <!-- 2 -->
+          <circle class="s-keep" cx="352" cy="14" r="11"/>
+          <text class="s-t mid" x="352" y="15" style="fill:var(--paper-2);font-weight:700">2</text>
+          <text class="s-t b" x="372" y="15">경고창에서 다시 &lt;열기&gt;</text>
+
+          <rect class="s-card" x="340" y="34" width="245" height="120" rx="8"/>
+          <rect class="s-line" x="340" y="34" width="245" height="120" rx="8" stroke-width="1"/>
+          <text class="s-t sm mid" x="462" y="58">⚠️</text>
+          <text class="s-t sm mid" x="462" y="78">개발자를 확인할 수 없습니다.</text>
+          <text class="s-t sm mid" x="462" y="94">그래도 여시겠습니까?</text>
+          <!-- 버튼들 -->
+          <rect class="s-bg" x="356" y="112" width="66" height="26" rx="5"/>
+          <text class="s-t sm mid" x="389" y="126">휴지통</text>
+          <rect class="s-bg" x="428" y="112" width="60" height="26" rx="5"/>
+          <text class="s-t sm mid" x="458" y="126">취소</text>
+          <rect class="s-keep" x="494" y="112" width="76" height="26" rx="5"/>
+          <text class="s-t sm mid" x="532" y="126" style="fill:var(--paper-2);font-weight:700">열기</text>
+          <path class="s-ink" d="M552 132 l0 17 l4.4 -4.4 l3 6.4 l2.8 -1.3 l-3 -6.2 l6 -0.2 z"/>
+
+          <text class="s-t sm" x="0" y="178">※ 그냥 더블클릭하면 <tspan class="s-t sm b">"열 수 없습니다"</tspan> 만 뜨고 끝납니다.</text>
+          <text class="s-t sm" x="0" y="198">　 반드시 <tspan class="s-t sm b">오른쪽 클릭 → 열기</tspan> 로 시작하세요. 한 번만 하면 됩니다.</text>
+        </svg>
+        <figcaption>
+          맥은 인터넷에서 받은 파일을 처음 열 때 이렇게 막습니다.
+          <strong>오른쪽 클릭으로 열면</strong> "그래도 열기" 선택지가 생깁니다.
+        </figcaption>
+      </figure>
 
       <p class="prose">
         까만 창이 열리면서 두 프로그램을 내려받습니다. <strong>보통 10~30초</strong>면 끝납니다.
@@ -520,6 +699,39 @@
         방송 시작 전에 녹화를 먼저 켜셨다면 그만큼 차이가 나기 때문입니다.
         프로그램이 자동으로 맞추지만, <strong>한 번은 눈으로 확인해야</strong> 합니다.
       </p>
+      <figure>
+        <svg viewBox="0 0 600 175" role="img" aria-label="녹화 시작과 방송 시작 시각이 달라 채팅 시간과 영상 시간이 어긋나는 이유">
+          <!-- 녹화 -->
+          <text class="s-t b" x="0" y="16">📹 OBS 녹화</text>
+          <rect class="s-bg" x="0" y="26" width="600" height="26" rx="5"/>
+          <text class="s-t sm" x="8" y="39">0:00 녹화 켬</text>
+          <rect class="s-keep" x="150" y="26" width="450" height="26" rx="0" opacity="0.25"/>
+
+          <!-- 방송 -->
+          <text class="s-t b" x="0" y="80">💬 유튜브 방송 (채팅)</text>
+          <rect class="s-bg" x="150" y="90" width="450" height="26" rx="5"/>
+          <text class="s-t sm" x="158" y="103">0:00 방송 시작</text>
+
+          <!-- 차이 표시 -->
+          <path class="s-stroke-cut" d="M0 62 L0 132" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <path class="s-stroke-cut" d="M150 62 L150 132" stroke-width="1.2" stroke-dasharray="3 3"/>
+          <path class="s-stroke-cut" d="M0 126 H150" stroke-width="1.5"/>
+          <path class="s-stroke-cut" d="M8 121 L1 126 L8 131" stroke-width="1.5"/>
+          <path class="s-stroke-cut" d="M142 121 L149 126 L142 131" stroke-width="1.5"/>
+          <text class="s-t sm" x="158" y="126" style="fill:var(--cut)">이 차이만큼 어긋납니다 (보통 수십 초 ~ 수 분)</text>
+
+          <!-- 같은 순간 -->
+          <path class="s-mark" d="M330 56 l5 -9 l5 9 z"/>
+          <text class="s-t sm" x="344" y="52">웃음이 터진 순간</text>
+          <circle class="s-mark" cx="335" cy="103" r="4"/>
+          <text class="s-t sm" x="344" y="150">같은 순간인데 <tspan class="s-t sm b">영상에서는 55분, 채팅에서는 52분</tspan> 으로 기록됩니다</text>
+        </svg>
+        <figcaption>
+          보통 방송을 켜기 전에 녹화를 먼저 시작하기 때문에 <strong>두 시계가 어긋납니다.</strong>
+          이 차이를 맞춰줘야 채팅이 터진 순간과 영상 속 그 장면이 이어집니다.
+        </figcaption>
+      </figure>
+
       <div class="callout is-stop">
         <span class="callout-label">이걸 건너뛰면</span>
         <p class="prose">
@@ -639,12 +851,66 @@
         </table>
       </div>
 
-      <h3>숏츠 옵션</h3>
+      <h3>숏츠 옵션 — 가로 화면을 세로로 바꾸는 두 가지 방법</h3>
+
+      <figure>
+        <svg viewBox="0 0 600 200" role="img" aria-label="가로 영상을 세로 숏츠로 만드는 블러 배경 방식과 꽉 채우기 방식 비교">
+          <defs>
+            <linearGradient id="blurbg" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="var(--keep)" stop-opacity="0.35"/>
+              <stop offset="0.5" stop-color="var(--keep)" stop-opacity="0.15"/>
+              <stop offset="1" stop-color="var(--keep)" stop-opacity="0.35"/>
+            </linearGradient>
+          </defs>
+
+          <!-- 원본 16:9 -->
+          <text class="s-t b mid" x="90" y="14">원본 (가로)</text>
+          <rect class="s-bg" x="10" y="26" width="160" height="90" rx="6"/>
+          <rect class="s-keep" x="18" y="34" width="144" height="74" rx="4" opacity="0.3"/>
+          <rect class="s-keep" x="118" y="76" width="38" height="28" rx="3" opacity="0.9"/>
+          <text class="s-t sm mid" x="90" y="60">게임 화면</text>
+          <text class="s-t sm mid" x="137" y="90" style="fill:var(--paper-2)">얼굴</text>
+          <text class="s-t sm mid" x="90" y="132">16 : 9</text>
+
+          <!-- 화살표 -->
+          <path class="s-stroke-ink3" d="M186 71 H214" stroke-width="1.5"/>
+          <path class="s-stroke-ink3" d="M208 65 L215 71 L208 77" stroke-width="1.5"/>
+
+          <!-- 블러 배경 -->
+          <text class="s-t b mid" x="290" y="14">블러 배경</text>
+          <rect x="250" y="26" width="80" height="142" rx="6" fill="url(#blurbg)"/>
+          <rect class="s-line" x="250" y="26" width="80" height="142" rx="6" stroke-width="1"/>
+          <rect class="s-keep" x="254" y="75" width="72" height="40" rx="3" opacity="0.35"/>
+          <rect class="s-keep" x="304" y="99" width="19" height="14" rx="2" opacity="0.9"/>
+          <text class="s-t sm mid" x="290" y="52">흐린 배경</text>
+          <text class="s-t sm mid" x="290" y="145">흐린 배경</text>
+          <text class="s-t sm mid" x="290" y="184">화면 전체가 남음</text>
+
+          <!-- 꽉 채우기 -->
+          <text class="s-t b mid" x="450" y="14">꽉 채우기</text>
+          <rect class="s-bg" x="410" y="26" width="80" height="142" rx="6"/>
+          <rect class="s-keep" x="410" y="26" width="80" height="142" rx="6" opacity="0.3"/>
+          <rect class="s-keep" x="452" y="120" width="34" height="26" rx="3" opacity="0.9"/>
+          <text class="s-t sm mid" x="450" y="90">게임 화면</text>
+          <text class="s-t sm mid" x="469" y="134" style="fill:var(--paper-2)">얼굴</text>
+          <text class="s-t sm mid" x="450" y="184">좌우가 잘림</text>
+
+          <!-- 잘리는 부분 표시 -->
+          <path class="s-stroke-cut" d="M410 26 L410 168" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <path class="s-stroke-cut" d="M490 26 L490 168" stroke-width="1.5" stroke-dasharray="3 3"/>
+        </svg>
+        <figcaption>
+          <strong>블러 배경</strong>은 화면을 하나도 안 자르는 대신 위아래가 흐린 띠로 채워집니다.
+          <strong>꽉 채우기</strong>는 화면이 꽉 차는 대신 좌우가 잘립니다.
+        </figcaption>
+      </figure>
+
       <div class="tablewrap">
         <table>
-          <tr><th>블러 배경</th><td>화면을 그대로 두고 위아래를 흐리게 채웁니다. <strong>게임 화면이 잘리면 안 될 때</strong></td></tr>
-          <tr><th>꽉 채우기</th><td>좌우를 잘라 꽉 채웁니다. <code>크롭 중심</code> 으로 어디를 남길지 지정
-            (얼굴캠이 오른쪽 아래면 0.7~0.8)</td></tr>
+          <tr><th>블러 배경</th><td>화면을 그대로 두고 위아래를 흐리게 채웁니다.
+            <strong>게임 화면이 잘리면 안 될 때</strong> 쓰세요</td></tr>
+          <tr><th>꽉 채우기</th><td>좌우를 잘라 꽉 채웁니다. <strong>어디를 남길지</strong>는
+            <code>크롭 중심</code> 으로 정합니다 — <strong>얼굴캠이 오른쪽 아래에 있으면 0.7~0.8</strong></td></tr>
           <tr><th>최대 길이</th><td>기본 59초. 넘는 건 가장 반응이 컸던 지점 중심으로 잘립니다</td></tr>
         </table>
       </div>
