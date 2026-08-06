@@ -41,7 +41,7 @@ const SERIES_COLOR = {
 };
 
 // --------------------------------------------------------------------- 상태
-const S = { projects: [], proj: null, curves: null, poll: null, fsPath: null };
+const S = { projects: [], proj: null, curves: null, poll: null, fsPath: null, search: null };
 
 // --------------------------------------------------------------------- 환경 점검
 async function loadDoctor() {
@@ -100,6 +100,9 @@ async function loadFs(path) {
 async function openProject(pid) {
   const { project } = await api('/api/projects/' + encodeURIComponent(pid));
   S.proj = project;
+  S.search = null;                    // 다른 방송의 검색 결과가 남아 있으면 안 된다
+  $('#search-out').innerHTML = '';
+  $('#search-head').classList.add('hidden');
   $('#view-new').classList.add('hidden');
   $('#view-proj').classList.remove('hidden');
   renderProject();
@@ -288,6 +291,97 @@ function segCard(s) {
   return c;
 }
 function nudge(txt, fn) { const b = el('button', 'small ghost', txt); b.onclick = fn; return b; }
+
+// --------------------------------------------------------------------- 채팅 키워드 검색
+
+async function runSearch() {
+  const q = $('#q-text').value.trim();
+  const out = $('#search-out');
+  if (!q) { out.innerHTML = ''; $('#search-head').classList.add('hidden'); return; }
+  const btn = $('#btn-search');
+  btn.disabled = true; btn.textContent = '찾는 중…';
+  out.innerHTML = '';
+  try {
+    const p = new URLSearchParams({
+      q: q,
+      gap: $('#q-gap').value || 30,
+      pre: $('#q-pre').value || 15,
+      post: $('#q-post').value || 10,
+      min_hits: $('#q-min').value || 1,
+    });
+    S.search = await api('/api/projects/' + S.proj.id + '/chat/search?' + p.toString());
+    renderSearch();
+  } catch (e) {
+    S.search = null;
+    $('#search-head').classList.add('hidden');
+    out.appendChild(el('p', 'dim', e.message));
+  }
+  btn.disabled = false; btn.textContent = '찾기';
+}
+
+function renderSearch() {
+  const r = S.search, out = $('#search-out');
+  out.innerHTML = '';
+  if (!r.groups.length) {
+    $('#search-head').classList.add('hidden');
+    out.appendChild(el('p', 'dim',
+      '“' + r.query.join(' ') + '” 이(가) 들어간 채팅이 없습니다. 다른 낱말로 해보세요.'));
+    return;
+  }
+  $('#search-head').classList.remove('hidden');
+  $('#search-count').textContent =
+    '구간 ' + r.groups.length + '개 · 채팅 ' + r.total + '줄에서 찾음';
+  r.groups.forEach((g) => out.appendChild(foundCard(g)));
+}
+
+function foundCard(g) {
+  const c = el('div', 'seg');
+  const hd = el('div', 'hd');
+  hd.appendChild(el('span', 'rank', g.hits + '회'));
+  hd.appendChild(el('span', '', '🔎 ' + Object.keys(g.matched).join(', ')));
+  hd.appendChild(el('span', 'tc', fmtTC(g.start) + ' ~ ' + fmtTC(g.end) + '  (' + Math.round(g.dur) + '초)'));
+  const src = Object.entries(g.sources || {}).map(([k, n]) => (k === 'chzzk' ? '치지직' : '유튜브') + ' ' + n).join(' · ');
+  if (src) hd.appendChild(el('span', 'sc', src));
+  c.appendChild(hd);
+
+  if ((g.messages || []).length) {
+    const ch = el('div', 'chat');
+    g.messages.forEach((m) => {
+      const d = el('div', m.kind !== 'text' ? 'paid' : '');
+      d.appendChild(el('span', 'k', fmtTC(m.t)));
+      d.appendChild(document.createTextNode((m.author ? m.author + ': ' : '') + m.text));
+      ch.appendChild(d);
+    });
+    c.appendChild(ch);
+  }
+
+  const acts = el('div', 'acts');
+  const add = el('button', 'small primary', '후보에 추가');
+  add.onclick = async () => {
+    add.disabled = true;
+    const r = await addFound([g]);
+    add.textContent = r && r.added ? '추가됨' : '이미 있는 자리';
+  };
+  acts.appendChild(add);
+  c.appendChild(acts);
+  return c;
+}
+
+async function addFound(groups) {
+  if (!groups || !groups.length) return null;
+  try {
+    const r = await post('/api/projects/' + S.proj.id + '/segments/add',
+                         { groups: groups, query: (S.search || {}).query || [] });
+    S.proj.segments = r.segments;
+    renderSegments();
+    drawTimeline();
+    if (r.skipped) toast(r.added + '개 추가 · ' + r.skipped + '개는 이미 있는 자리라 건너뜀');
+    return r;
+  } catch (e) {
+    toast('후보에 넣지 못했습니다: ' + e.message, true);
+    return null;
+  }
+}
 
 let saveTimer = null;
 function saveSegments(rerender) {
@@ -566,6 +660,10 @@ function bind() {
   $('#btn-all').onclick = () => { (S.proj.segments || []).forEach((s) => (s.selected = true)); renderSegments(); drawTimeline(); saveSegments(); };
   $('#btn-none').onclick = () => { (S.proj.segments || []).forEach((s) => (s.selected = false)); renderSegments(); drawTimeline(); saveSegments(); };
   $('#btn-top10').onclick = () => { (S.proj.segments || []).forEach((s) => (s.selected = s.rank <= 10)); renderSegments(); drawTimeline(); saveSegments(); };
+
+  $('#btn-search').onclick = runSearch;
+  $('#q-text').onkeydown = (e) => { if (e.key === 'Enter') runSearch(); };
+  $('#btn-search-add-all').onclick = () => addFound((S.search || {}).groups || []);
 
   $('#btn-xml-markers').onclick = () => runExport('xml', 'markers', '프리미어 XML(마커)');
   $('#btn-xml-rough').onclick = () => runExport('xml', 'roughcut', '프리미어 XML(러프컷)');

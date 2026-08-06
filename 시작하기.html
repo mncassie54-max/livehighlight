@@ -340,6 +340,7 @@
         <a href="#lh-new">분석 걸기</a>
         <a href="#lh-sync">시간 맞추기 ⚠️</a>
         <a href="#lh-pick">쓸 구간 고르기</a>
+        <a href="#lh-search">키워드로 찾기</a>
         <a href="#lh-export">내보내기</a>
       </div>
       <div class="toc-group">
@@ -1059,6 +1060,52 @@
       </div>
     </section>
 
+    <section id="lh-search">
+      <p class="sec-kicker">3 · Live Highlight 쓰는 법</p>
+      <h2>🔎 채팅에서 키워드로 찾기</h2>
+      <p class="prose">
+        앞의 방식은 <strong>“반응이 튀었는지”만</strong> 봅니다. 무엇에 대한 반응이었는지는 모릅니다.
+        그래서 <strong>“그 게임 얘기한 데가 어디였지”</strong> 같은 건 못 찾습니다.
+      </p>
+      <p class="prose">
+        이건 반대로 갑니다. <strong>채팅 원문에서 낱말을 찾아</strong>, 그 낱말이 몰린 자리를
+        구간으로 묶어 줍니다.
+      </p>
+      <div class="screen">롤 발로란트          <span class="c">← 띄어쓰기로 여러 개. 하나라도 있으면 찾습니다</span>
+"그 게임"            <span class="c">← 따옴표로 묶으면 띄어쓰기까지 그대로</span></div>
+      <p class="prose">
+        영어는 대소문자를 가리지 않고, 한국어는 조사가 붙어도 찾습니다
+        (<code>롤</code> 로 <code>롤을</code>, <code>롤이</code> 까지).
+      </p>
+
+      <div class="screen"><b>6회</b>  🔎 롤   17:07 ~ 18:02 (55초)        유튜브 6
+    17:22 롤팬: 롤 하자 ㄱㄱ
+<b>3회</b>  🔎 롤   58:47 ~ 59:24 (37초)   유튜브 1 · 치지직 2
+    59:02 시청자: 롤 시즌 언제 시작?</div>
+
+      <p class="prose">
+        <strong>몇 번 나왔는지</strong>, <strong>어느 플랫폼이었는지</strong>, <strong>그때 채팅</strong>이 같이 보입니다.
+        쓸 만하면 <span class="btn">후보에 추가</span> 를 누르세요. 후보 목록에 <code>🔎</code> 표시로 들어가고,
+        그다음은 자동으로 찾은 후보와 똑같습니다 — 미리보기·숏츠·프리미어 XML 전부 됩니다.
+      </p>
+
+      <div class="tablewrap">
+        <table>
+          <tr><th>묶는 간격</th><td>기본 30초. 이보다 멀리 떨어진 채팅은 다른 구간으로 봅니다</td></tr>
+          <tr><th>앞·뒤 여유</th><td>찾은 자리 앞뒤로 더 붙일 시간. 반응은 사건보다 늦게 오므로 앞을 더 줍니다</td></tr>
+          <tr><th>최소 횟수</th><td>2 이상으로 두면 <strong>지나가듯 한 번 나온 낱말은 뺍니다</strong></td></tr>
+        </table>
+      </div>
+
+      <div class="callout">
+        <span class="callout-label">다시 검출해도 지워지지 않습니다</span>
+        <p class="prose">
+          손으로 찍어둔 자리라서, 검출 설정을 바꿔 다시 검출해도 <code>🔎</code> 구간은 그대로 남습니다.
+          빼고 싶으면 후보 목록에서 체크를 해제하세요.
+        </p>
+      </div>
+    </section>
+
     <section id="lh-export">
       <p class="sec-kicker">3 · Live Highlight 쓰는 법</p>
       <h2>내보내기</h2>
@@ -1181,6 +1228,10 @@
         창 안으로 <strong>영상 파일을 끌어다 놓습니다.</strong>
         여러 개를 한꺼번에 놓아도 됩니다 — 순서대로 처리합니다.
         <strong>설정은 전부 그대로 두셔도 됩니다.</strong>
+      </p>
+      <p class="prose">
+        끌어다 놓기가 번거로우면 <span class="btn">영상 파일 선택…</span> 을 눌러 골라도 됩니다.
+        마지막에 연 폴더를 기억하니, 촬영본이 한 폴더에 쌓여 있으면 다음부터 바로 열립니다.
       </p>
       <div class="screen">미디어 확인 → 오디오 분석 …% → 무음 감지 → 강조 감지 → XML 생성 → <b>완료</b></div>
       <p class="prose">

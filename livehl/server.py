@@ -14,7 +14,7 @@ import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
-from . import config, ffmpeg_tools, jobs, pipeline, store
+from . import config, ffmpeg_tools, jobs, pipeline, search, store
 
 Handler = Callable[["Req"], Any]
 _ROUTES: List[Tuple[str, "re.Pattern", Handler]] = []
@@ -222,6 +222,39 @@ def _segments(r: Req):
         s["dur"] = round(s["end"] - s["start"], 1)
     store.save(proj)
     return {"ok": True, "segments": proj["segments"]}
+
+
+@route("GET", r"/api/projects/([\w가-힣-]+)/chat/search")
+def _chat_search(r: Req):
+    """채팅에서 키워드를 찾아 몰린 구간을 돌려준다. 저장은 하지 않는다."""
+    q = (r.q("q") or "").strip()
+    if not q:
+        raise ApiError("검색어를 입력하세요.")
+
+    def num(name, default, lo, hi):
+        try:
+            return max(lo, min(hi, float(r.q(name, default))))
+        except (TypeError, ValueError):
+            return default
+
+    return pipeline.search_chat(
+        r.m.group(1), q,
+        gap=num("gap", 30.0, 2.0, 600.0),
+        pre=num("pre", 15.0, 0.0, 300.0),
+        post=num("post", 10.0, 0.0, 300.0),
+        min_hits=int(num("min_hits", 1, 1, 100)),
+        limit=int(num("limit", 50, 1, 300)),
+    )
+
+
+@route("POST", r"/api/projects/([\w가-힣-]+)/segments/add")
+def _segments_add(r: Req):
+    """검색으로 찾은 구간을 후보 목록에 넣는다."""
+    groups = r.body.get("groups") or []
+    words = [str(w)[:40] for w in (r.body.get("query") or [])][:8]
+    if not groups:
+        raise ApiError("추가할 구간이 없습니다.")
+    return pipeline.add_segments(r.m.group(1), search.to_segments(groups, words))
 
 
 @route("POST", r"/api/projects/([\w가-힣-]+)/export")

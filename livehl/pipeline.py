@@ -6,7 +6,7 @@ from typing import Any, Callable, Dict, List, Optional
 
 import numpy as np
 
-from . import align, audio, chat, chzzk, config, export_clips, ffmpeg_tools, score, store
+from . import align, audio, chat, chzzk, config, export_clips, ffmpeg_tools, score, search, store
 from . import export_xml as xmlout
 
 Progress = Callable[[float, str], None]
@@ -245,10 +245,69 @@ def detect(pid: str, params: Optional[Dict[str, Any]] = None,
             s["selected"] = o.get("selected", True)
             s["title"] = o.get("title", "")
 
+    # 채팅 검색으로 직접 넣은 구간은 다시 검출해도 살려 둔다.
+    # 사용자가 손으로 찍어둔 자리인데 임계값을 한 번 만졌다고 사라지면 못 쓴다.
+    # 같은 자리를 자동 검출도 잡았다면 검색 쪽을 남긴다(마커가 두 개 생기지 않게).
+    pinned = [s for s in (proj.get("segments") or []) if s.get("src") == "search"]
+    if pinned:
+        segs = [s for s in segs if not any(search.overlaps(s, p) for p in pinned)] + pinned
+        segs = renumber(segs)
+
     proj["segments"] = segs
     store.save(proj)
     progress(1.0, "후보 %d개" % len(segs))
     return segs
+
+
+def renumber(segs: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    """시간 순으로 id 를, 점수 순으로 rank 를 다시 매긴다."""
+    segs = sorted(segs, key=lambda s: float(s["start"]))
+    for i, s in enumerate(segs):
+        s["id"] = i
+    for rank, s in enumerate(sorted(segs, key=lambda s: -float(s.get("score") or 0.0)), start=1):
+        s["rank"] = rank
+    return segs
+
+
+# --------------------------------------------------------------------------- 3-B. 채팅 검색
+
+
+def search_chat(pid: str, query: str, **kw: Any) -> Dict[str, Any]:
+    """채팅 원문에서 키워드를 찾아 몰린 자리를 구간으로 돌려준다.
+
+    자동 검출은 "반응이 튀었는지" 만 보므로 무엇에 대한 반응이었는지는 모른다.
+    이쪽은 반대로 내용에서 찾는다.
+    """
+    proj = store.load(pid)
+    events = load_events(pid)
+    if not events:
+        raise RuntimeError(
+            "이 프로젝트에는 수집된 채팅이 없습니다. "
+            "위에서 다시보기 URL 을 넣고 '채팅 리플레이 받아서 분석' 을 켠 뒤 분석을 실행하세요."
+        )
+    return search.find(
+        events, query,
+        offset=float(proj.get("offset_sec") or 0.0),
+        duration=float((proj.get("media") or {}).get("duration") or 0.0),
+        **kw,
+    )
+
+
+def add_segments(pid: str, segs: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """찾은 구간을 후보 목록에 넣는다. 이미 있는 자리와 겹치면 건너뛴다."""
+    proj = store.load(pid)
+    existing = list(proj.get("segments") or [])
+    added = 0
+    for s in segs:
+        if any(search.overlaps(s, o) for o in existing):
+            continue
+        existing.append(dict(s))
+        added += 1
+    proj["segments"] = renumber(existing)
+    store.save(proj)
+    store.log(proj, "채팅 검색으로 %d개 추가 (%d개는 이미 있는 자리)" % (added, len(segs) - added))
+    store.save(proj)
+    return {"added": added, "skipped": len(segs) - added, "segments": proj["segments"]}
 
 
 def curves_for_plot(pid: str, width: int = 1600) -> Dict[str, Any]:

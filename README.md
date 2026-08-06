@@ -202,10 +202,12 @@ livehl/
   audio.py         PCM 스트리밍 수신, RMS 엔벨로프, 롤링 베이스라인, 웃음 진동(FFT)
   align.py         파일명/생성시각 파싱, 초기 오프셋, FFT 교차상관 미세보정
   score.py         robust z-score 정규화, 가중합, 피크 검출, 후보 생성/병합/랭킹
+  search.py        채팅 원문 키워드 검색 → 히트가 몰린 자리를 구간으로 묶기
   export_xml.py    FCP7 XML(마커/러프컷), CSV·TXT 리포트
   export_clips.py  미리보기 mp4, 숏츠 9:16(블러/크롭)
   pipeline.py      전체 오케스트레이션 + 신호 캐시
   jobs.py          백그라운드 작업 + 진행률
   server.py        표준 라이브러리 HTTP 서버, 파일 브라우저, Range 지원 미디어 서빙
 web/               index.html · style.css · app.js (바닐라, 빌드 불필요)
+tests/             pytest (배포에는 포함되지 않는다 — 배포목록.txt 참고)
 ```

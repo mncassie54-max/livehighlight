@@ -130,9 +130,44 @@
         <div id="tl-tip" class="tip hidden"></div>
       </div>
 
-      <!-- 6. 후보 -->
+      <!-- 6. 채팅 검색 -->
       <div class="card">
-        <h3>6. 하이라이트 후보 <span id="seg-count" class="dim"></span></h3>
+        <h3>6. 채팅에서 키워드로 찾기 <small>내용으로 구간 찾기</small></h3>
+        <p class="dim small">
+          자동 검출은 “반응이 튀었는지”만 봅니다. 무엇에 대한 반응이었는지는 모릅니다.
+          “그 게임 얘기한 데가 어디였지” 처럼 <b>내용으로</b> 찾을 때 여기를 쓰세요.
+        </p>
+        <div class="row inline">
+          <input id="q-text" type="text" spellcheck="false" style="flex:1"
+                 placeholder="예: 롤 발로란트 — 띄어쓰기로 여러 개, 따옴표로 묶으면 그대로 찾습니다">
+          <button id="btn-search" class="primary">찾기</button>
+        </div>
+        <div class="row inline">
+          <span class="qopt"><label>묶는 간격</label>
+            <input id="q-gap" type="number" value="30" min="2" max="600"></span>
+          <span class="qopt"><label>앞 여유</label>
+            <input id="q-pre" type="number" value="15" min="0" max="300"></span>
+          <span class="qopt"><label>뒤 여유</label>
+            <input id="q-post" type="number" value="10" min="0" max="300"></span>
+          <span class="qopt"><label>최소 횟수</label>
+            <input id="q-min" type="number" value="1" min="1" max="100"></span>
+        </div>
+        <p class="dim small">
+          <b>묶는 간격</b>(초)보다 멀리 떨어진 채팅은 다른 구간으로 봅니다.
+          <b>앞·뒤 여유</b>(초)는 찾은 자리 앞뒤로 더 붙일 시간입니다 —
+          반응은 사건보다 늦게 오므로 앞을 더 줍니다.
+          <b>최소 횟수</b>를 2 이상으로 두면 지나가듯 한 번 나온 낱말은 뺍니다.
+        </p>
+        <div id="search-head" class="row inline hidden">
+          <span id="search-count" class="dim"></span>
+          <button id="btn-search-add-all" class="ghost small">찾은 것 전부 후보에 추가</button>
+        </div>
+        <div id="search-out" class="segs"></div>
+      </div>
+
+      <!-- 7. 후보 -->
+      <div class="card">
+        <h3>7. 하이라이트 후보 <span id="seg-count" class="dim"></span></h3>
         <div class="row inline">
           <button id="btn-all" class="ghost small">전체 선택</button>
           <button id="btn-none" class="ghost small">전체 해제</button>
@@ -144,7 +179,7 @@
 
       <!-- 7. 익스포트 -->
       <div class="card">
-        <h3>7. 내보내기</h3>
+        <h3>8. 내보내기</h3>
         <div class="row inline">
           <button id="btn-xml-markers" class="primary">프리미어 XML · 마커</button>
           <button id="btn-xml-rough" class="primary">프리미어 XML · 러프컷</button>
