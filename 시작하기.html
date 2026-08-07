@@ -1064,44 +1064,136 @@
       <p class="sec-kicker">3 · Live Highlight 쓰는 법</p>
       <h2>🔎 채팅에서 키워드로 찾기</h2>
       <p class="prose">
-        앞의 방식은 <strong>“반응이 튀었는지”만</strong> 봅니다. 무엇에 대한 반응이었는지는 모릅니다.
-        그래서 <strong>“그 게임 얘기한 데가 어디였지”</strong> 같은 건 못 찾습니다.
+        편집하다 보면 이런 순간이 옵니다.
+        <strong>“그때 그 게임 얘기하면서 엄청 웃겼는데, 그게 몇 시쯤이었지?”</strong>
+        후보 목록을 위아래로 훑어봐도 안 보입니다.
       </p>
       <p class="prose">
-        이건 반대로 갑니다. <strong>채팅 원문에서 낱말을 찾아</strong>, 그 낱말이 몰린 자리를
-        구간으로 묶어 줍니다.
+        당연합니다. 앞에서 자동으로 찾아준 후보는 <strong>“반응이 컸던 자리”</strong>입니다.
+        채팅이 갑자기 몰리고 목소리가 커진 것을 보고 “여기 뭔가 있었다”고 표시해 둔 것이지,
+        <strong>그게 무슨 얘기였는지는 프로그램도 모릅니다.</strong>
       </p>
-      <div class="screen">롤 발로란트          <span class="c">← 띄어쓰기로 여러 개. 하나라도 있으면 찾습니다</span>
-"그 게임"            <span class="c">← 따옴표로 묶으면 띄어쓰기까지 그대로</span></div>
       <p class="prose">
-        영어는 대소문자를 가리지 않고, 한국어는 조사가 붙어도 찾습니다
-        (<code>롤</code> 로 <code>롤을</code>, <code>롤이</code> 까지).
+        그래서 반대 방향으로 찾는 방법을 하나 더 넣었습니다.
+        <strong>찾고 싶은 낱말을 직접 적어서 채팅을 뒤지는 것</strong>입니다.
+        시청자들이 “롤”이라고 친 자리를 모아 보면, 롤 얘기를 한 구간이 나옵니다.
       </p>
 
-      <div class="screen"><b>6회</b>  🔎 롤   17:07 ~ 18:02 (55초)        유튜브 6
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <h3>낱말을 적고 찾기를 누릅니다</h3>
+            <p class="prose"><strong>채팅에서 키워드로 찾기</strong> 칸에 적고
+              <span class="btn">찾기</span> 를 누르세요.</p>
+            <div class="screen">롤 발로란트          <span class="c">← 띄어쓰기로 여러 개. 둘 중 하나만 있어도 찾습니다</span>
+"그 게임"            <span class="c">← 따옴표로 묶으면 띄어쓰기까지 그대로 찾습니다</span></div>
+            <p class="step-note">대소문자는 신경 쓰지 않아도 됩니다 — <code>LOL</code> 과 <code>lol</code> 이 같습니다.
+              조사가 붙어도 찾습니다. <code>롤</code> 하나만 적으면 <code>롤을</code>, <code>롤이</code>,
+              <code>롤ㄱㄱ</code> 까지 다 걸립니다.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <h3>결과를 봅니다</h3>
+            <div class="screen">구간 2개 · 채팅 9줄에서 찾음
+
+<b>6회</b>  🔎 롤   17:07 ~ 18:02 (55초)              유튜브 6
     17:22 롤팬: 롤 하자 ㄱㄱ
-<b>3회</b>  🔎 롤   58:47 ~ 59:24 (37초)   유튜브 1 · 치지직 2
+    17:31 시청자: 롤 ㅋㅋㅋ
+
+<b>3회</b>  🔎 롤   58:47 ~ 59:24 (37초)     유튜브 1 · 치지직 2
     59:02 시청자: 롤 시즌 언제 시작?</div>
+            <p class="prose">
+              왼쪽의 <b>6회</b> 는 그 구간에서 <strong>그 낱말이 몇 번 나왔는지</strong>입니다.
+              <strong>숫자가 클수록 진짜 그 얘기를 한 자리</strong>입니다. 위 예시라면 첫 번째가 본론이고,
+              두 번째는 지나가듯 한마디 나온 자리일 수 있습니다.
+              오른쪽에는 어느 플랫폼 채팅이었는지, 아래에는 그때 실제 채팅이 보입니다.
+            </p>
+            <p class="step-note">찾은 채팅을 한 줄씩 쭉 나열하지는 않습니다. 그러면 200줄이 나와서 쓸 수가 없습니다.
+              <strong>30초 안에 붙어 있는 것끼리 한 덩이로 묶어</strong> 구간 하나로 만들어 줍니다.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <h3>쓸 만한 것을 후보에 추가합니다</h3>
+            <p class="prose">
+              구간마다 붙어 있는 <span class="btn">후보에 추가</span>, 또는 위쪽의
+              <span class="btn">찾은 것 전부 후보에 추가</span> 를 누르세요.
+              후보 목록에 <code>🔎</code> 표시로 들어가고,
+              <strong>그다음은 자동으로 찾은 후보와 똑같습니다</strong> —
+              미리보기·숏츠·프리미어 XML 전부 됩니다.
+            </p>
+            <p class="step-note">이미 후보로 잡혀 있는 자리를 추가하면 <code>이미 있는 자리</code> 라고 뜨고 넘어갑니다.
+              프리미어에 표시가 두 개 찍히지 않게 하려는 것이니 그냥 두시면 됩니다.</p>
+          </div>
+        </div>
+      </div>
 
-      <p class="prose">
-        <strong>몇 번 나왔는지</strong>, <strong>어느 플랫폼이었는지</strong>, <strong>그때 채팅</strong>이 같이 보입니다.
-        쓸 만하면 <span class="btn">후보에 추가</span> 를 누르세요. 후보 목록에 <code>🔎</code> 표시로 들어가고,
-        그다음은 자동으로 찾은 후보와 똑같습니다 — 미리보기·숏츠·프리미어 XML 전부 됩니다.
-      </p>
-
+      <h3>무엇을 적으면 되나</h3>
+      <p class="prose">막막하시면 여기서 골라 쓰시면 됩니다.</p>
       <div class="tablewrap">
         <table>
-          <tr><th>묶는 간격</th><td>기본 30초. 이보다 멀리 떨어진 채팅은 다른 구간으로 봅니다</td></tr>
-          <tr><th>앞·뒤 여유</th><td>찾은 자리 앞뒤로 더 붙일 시간. 반응은 사건보다 늦게 오므로 앞을 더 줍니다</td></tr>
-          <tr><th>최소 횟수</th><td>2 이상으로 두면 <strong>지나가듯 한 번 나온 낱말은 뺍니다</strong></td></tr>
+          <tr><th>찾고 싶은 것</th><th>이렇게 적습니다</th></tr>
+          <tr><td>특정 게임·주제 얘기한 데</td><td><code>롤 발로란트 옵치</code><br><span class="muted">흔한 낱말이니 최소 횟수를 3으로</span></td></tr>
+          <tr><td>같이 방송한 사람, 언급된 사람</td><td>이름을 그대로<br><span class="muted">드문 낱말이니 최소 횟수는 1로</span></td></tr>
+          <tr><td>시청자가 깜짝 놀란 순간</td><td><code>헐 뭐야 어떻게 실화</code></td></tr>
+          <tr><td>사고·해프닝이 있었던 데</td><td><code>아 잠깐 미안 죄송</code></td></tr>
+          <tr><td>시청자 질문에 답해준 데</td><td><code>질문 궁금</code></td></tr>
+          <tr><td>노래 신청 관련</td><td><code>신청곡 불러</code></td></tr>
         </table>
+      </div>
+
+      <h3>결과가 마음에 안 들 때</h3>
+      <p class="prose">
+        아래 네 칸(<strong>묶는 간격 · 앞 여유 · 뒤 여유 · 최소 횟수</strong>)의 숫자를 바꾸고 다시
+        <span class="btn">찾기</span> 를 누르면 됩니다. 뜻을 다 외울 필요 없이, 증상만 보고 찾아 쓰세요.
+      </p>
+      <div class="tablewrap">
+        <table>
+          <tr><th>이런 결과가 나왔다</th><th>이렇게 하세요</th></tr>
+          <tr><td>구간이 너무 많이 나온다</td><td><strong>최소 횟수</strong>를 2~3으로 올리세요.
+            지나가듯 한 번 나온 자리가 빠집니다</td></tr>
+          <tr><td>정작 그 얘기한 데가 안 나온다</td><td><strong>최소 횟수</strong>를 1로 내리고,
+            비슷한 낱말을 하나 더 넣어보세요</td></tr>
+          <tr><td>한 얘기가 여러 구간으로 쪼개진다</td><td><strong>묶는 간격</strong>을 60~90으로 올리세요.
+            띄엄띄엄 이어진 얘기를 한 덩이로 봅니다</td></tr>
+          <tr><td>정작 그 장면이 클립에 안 담긴다</td><td><strong>앞 여유</strong>를 25~30으로 올리세요.
+            시청자 반응은 사건보다 몇 초 늦게 옵니다</td></tr>
+          <tr><td>찾은 채팅이 없다고 나온다</td><td>낱말을 짧게 줄여보세요.
+            <code>발로란트</code> 보다 <code>발로</code> 가 잘 걸립니다</td></tr>
+        </table>
+      </div>
+
+      <div class="callout is-key">
+        <span class="callout-label">마음껏 눌러보셔도 됩니다</span>
+        <p class="prose">
+          찾기는 <strong>아무것도 저장하지 않고, 누르면 곧바로 나옵니다.</strong>
+          숫자를 이리저리 바꿔가며 몇 번이고 눌러도 망가지는 것이 없습니다.
+          <span class="btn">후보에 추가</span> 를 누르기 전까지는 후보 목록도 그대로입니다.
+        </p>
       </div>
 
       <div class="callout">
         <span class="callout-label">다시 검출해도 지워지지 않습니다</span>
         <p class="prose">
-          손으로 찍어둔 자리라서, 검출 설정을 바꿔 다시 검출해도 <code>🔎</code> 구간은 그대로 남습니다.
+          직접 찾아서 넣은 자리라서, 검출 설정을 바꿔 다시 검출해도 <code>🔎</code> 구간은 그대로 남습니다.
           빼고 싶으면 후보 목록에서 체크를 해제하세요.
+        </p>
+      </div>
+
+      <div class="callout">
+        <span class="callout-label">두 가지만 알아두세요</span>
+        <p class="prose">
+          <strong>짧은 낱말은 다른 낱말 속에도 걸립니다.</strong>
+          <code>롤</code> 로 찾으면 <code>컨트롤</code>, <code>롤케이크</code> 도 같이 걸립니다.
+          이럴 때는 <strong>최소 횟수</strong>를 올리거나, 더 긴 낱말로 바꿔보세요.
+        </p>
+        <p class="prose">
+          <strong>말로 한 것은 찾지 못합니다.</strong> 찾는 것은 채팅창에 적힌 글자뿐입니다.
+          방송에서 “롤 하자”라고 말했더라도 채팅에 아무도 그 낱말을 쓰지 않았다면 나오지 않습니다.
         </p>
       </div>
     </section>
